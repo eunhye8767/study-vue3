@@ -99,3 +99,13 @@
         </template>
     </ul>
     ```
+
+### vue install
+- `vue` 설치 명령어 : `npm i @vue/cli -g`
+
+### vue 프로젝트 폴더 생성
+- `vue create 생성할_폴더명`
+    - `vue 3`로 설치
+
+### Composable === hooks
+- 본 강의에선 `Composable(컴포저블)` 보단 `hooks`로 사용.
