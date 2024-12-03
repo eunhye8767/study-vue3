@@ -38,13 +38,64 @@
     - 파일 아이콘 테마 : [Material Icon Theme](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)
     - 뷰 확장 플러그인 : [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
     - 뷰 코드 스니펫 : [Vue VSCode Snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets)
+        - `vbc`를 치면, vue 기본 템플릿 나열
+            ```html
+            <template>
+                <div>
+
+                </div>
+            </template>
+
+            <script>
+                export default {
+                    
+                }
+            </script>
+
+            <style scoped>
+
+            </style>
+            ```
     - 문법 검사 : [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), TSLint
     - 실습 환경 보조 : Live Server
     - 기타 : Prettier, [Project Manager](https://marketplace.visualstudio.com/items?itemName=alefragnani.project-manager), [Auto Close Tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-close-tag), [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens), [Atom Keymap](https://marketplace.visualstudio.com/items?itemName=ms-vscode.atom-keybindings), [Jetbrains IDE Keymap](https://marketplace.visualstudio.com/items?itemName=isudox.vscode-jetbrains-keybindings) 등
 
-    ### Vue.js 개발자 도구 안내
-    - [개발자 도구 설치 링크](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+### Vue.js 개발자 도구 안내
+- [개발자 도구 설치 링크](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
 
-    ### 강의 교안과 소스 코드 안내
-    - [강의 교안(Cracking Vue.js)](https://joshua1988.github.io/vue-camp/)
-    - [강의 깃헙 리포지토리](https://github.com/joshua1988/learn-vue-js)
+### 강의 교안과 소스 코드 안내
+- [강의 교안(Cracking Vue.js)](https://joshua1988.github.io/vue-camp/)
+- [강의 깃헙 리포지토리](https://github.com/joshua1988/learn-vue-js)
+
+### vue 약어
+- `v-bind:` : `:`
+- `v-on:click=` : `@click=`
+- `preventDefault` : 버튼에서 기본적인 이벤트 제외할 때, `??.prevent:AA`으로 입력
+    ```html
+    <!-- 예시 -->
+    <form action ="" @submit.prevent="submitForm">
+    ```
+
+### v-for, v-if
+- `v-for`
+    ```html
+    <ul>
+        <li
+            v-for="user in activeUsers"
+            :key="user.id"
+        >
+            {{ user.name }}
+        </li>
+    </ul>
+    ```
+
+- `v-if`
+    ```html
+    <ul>
+        <template v-for="user in users" :key="user.id">
+            <li v-if="user.isActive">
+            {{ user.name }}
+            </li>
+        </template>
+    </ul>
+    ```
