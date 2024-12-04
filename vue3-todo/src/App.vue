@@ -1,26 +1,47 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <TodoHeader />
+    <TodoInput />
+    <!-- <TodoList :프롭스 이름="상위 컴포넌트의 데이터 이름" /> -->
+    <TodoList :todoItems="todoItems" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+/* eslint-disable */ 
+import TodoHeader from '@/components/TodoHeader.vue';
+import TodoInput from '@/components/TodoInput.vue';
+import TodoList from '@/components/TodoList.vue';
+import { ref } from 'vue';
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+    components: {
+        TodoHeader,
+        TodoInput,
+        TodoList,
+    },
+    setup() {
+        // data
+        const todoItems = ref([]);
+
+        // methods
+        function fetchTodos() {
+            const result = [];
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const todoItem = localStorage.key(i);
+                // items.value.push(todoItem);
+                result.push(todoItem);
+            }
+
+            return result;
+        }
+
+        todoItems.value = fetchTodos();
+
+        return { todoItems }
+    }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="sass" scoped>
+
 </style>
