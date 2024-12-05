@@ -36,7 +36,8 @@
             "no-unused-vars": "off",
             "no-mixed-spaces-and-tabs": 0,
             "vue/multi-word-component-names": 0,
-            "requireConfigFile": false
+            "requireConfigFile": false,
+            "following": 1
         }
     },
     "browserslist": [

@@ -109,3 +109,17 @@
 
 ### Composable === hooks
 - 본 강의에선 `Composable(컴포저블)` 보단 `hooks`로 사용.
+
+### setup에서 컴포넌트 이벤트 발생
+-
+```javascript
+export default {
+    setup(props, context) {
+        // 방법 1
+        context.emit('change')
+
+        // 방법 2 - 데이터를 넘길 때
+        context.emit('change', 100)
+    }
+}
+```
