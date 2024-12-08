@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TodoHeader />
+        <TodoHeader :appTitle="title" />
         <!-- <TodoInput @하위컴포넌트 이벤트 이름="상위컴포넌트의 메서드 이름" /> -->
         <TodoInput @add="addTodoItem" />
         <!-- <TodoList :프롭스 이름="상위 컴포넌트의 데이터 이름" /> -->
@@ -20,6 +20,11 @@ export default {
         TodoHeader,
         TodoInput,
         TodoList,
+    },
+    data() {
+        return {
+            title: '할일 앱',
+        }
     },
     setup() {
         // data
