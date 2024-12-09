@@ -13,7 +13,7 @@
 import TodoHeader from '@/components/TodoHeader.vue';
 import TodoInput from '@/components/TodoInput.vue';
 import TodoList from '@/components/TodoList.vue';
-import { ref } from 'vue';
+import { ref, onBeforeMount, onMounted, onUnmounted } from 'vue';
 
 export default {
     components: {
@@ -43,7 +43,23 @@ export default {
             return result;
         }
 
-        todoItems.value = fetchTodos();
+        // 라이프 사이클 API와 같은 동작 - beforeCreate, created
+        console.log("1: setup called");
+
+        // 라이프 사이클 API
+        onBeforeMount(() => {
+            console.log("2: onBeforeMount called");
+            todoItems.value = fetchTodos();
+        })
+
+        onMounted(() => {
+            console.log("3: onMounted called");
+        })
+
+        // 라이프 사이클 API - 컴포넌트를 지워야 실행
+        onUnmounted(() => {
+            console.log("4: onUnmounted called");
+        })
 
         const addTodoItem = (todo) => {
             todoItems.value.push(todo);

@@ -123,3 +123,44 @@ export default {
     }
 }
 ```
+
+### 인스턴스 라이프사이클
+- [인스턴스 라이프사이클 - cracking Vue js](https://joshua1988.github.io/vue-camp/vue/life-cycle.html#%E1%84%85%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%91%E1%85%B3%E1%84%89%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8F%E1%85%B3%E1%86%AF-%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%A5%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7)
+    ```javascript
+    // vue 2
+    export default {
+        // 인스턴스 옵션 속성 형태로 작성된 라이프사이클 훅
+        created() {},
+        beforeMount() {},
+        mounted() {},
+        destroyed() {}
+    }
+    
+    // vue 3
+    export default {
+        // 인스턴스 옵션 속성 형태로 작성된 라이프사이클 훅
+        created() {},
+        beforeMount() {},
+        mounted() {},
+        destroyed() {}
+    }
+    ```
+
+    ![img241209](./imgs/img241209.png)<br />
+    <br />
+
+    ```javascript
+    import { ref, onMounted } from 'vue';
+
+    export default {
+        setup() {
+            // data
+            const message = ref('Hello');
+
+            // lifecycle API
+            onMounted(() => {
+            console.log(message.value);
+            });
+        }
+    } 
+    ```
