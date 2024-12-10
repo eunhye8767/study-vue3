@@ -9,6 +9,8 @@
 
 <script>
 /* eslint-disable */
+import { watch} from 'vue';
+
 export default {
     props: ['todoItems'],
     // setup(props, context) {
@@ -19,6 +21,13 @@ export default {
             // context.emit('remove', item, index)
             emit('remove', item, index)
         }
+
+        // todoItems 값이 바뀔 때마다 실행
+        // 사용이 많을 수록 유지보수에선 데이터 관리가 어렵다.
+        // 지양하는 것이 최대 방법이다.
+        watch(props.todoItems, (newValue) => {
+            console.log(newValue);
+        })
 
         return { removeTodo }
     }

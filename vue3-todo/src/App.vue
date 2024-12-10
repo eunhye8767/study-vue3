@@ -56,7 +56,7 @@ export default {
             console.log("3: onMounted called");
         })
 
-        // 라이프 사이클 API - 컴포넌트를 지워야 실행
+        // 라이프 사이클 API - 컴포넌트를 지워야 실행(제거)
         onUnmounted(() => {
             console.log("4: onUnmounted called");
         })

@@ -164,3 +164,21 @@ export default {
         }
     } 
     ```
+
+### watch API
+- [watch API](https://joshua1988.github.io/vue-camp/composition/watch.html)
+    ```javascript
+    import { ref, watch } from 'vue';
+
+    export default {
+        setup() {
+            // data
+            const message = ref('');
+
+            // watch
+            watch(message, (newValue, oldValue) => {
+                console.log(newValue);
+            });
+        }
+    } 
+    ```
