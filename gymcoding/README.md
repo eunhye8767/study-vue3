@@ -39,7 +39,7 @@
         - [Vite 3.0 출시 Server Port 관련 참고](https://vite.dev/blog/announcing-vite3.html#vite-cli)
         - [질문, npm run dev 했을때 자동 새로고침 문의드립니다](https://www.inflearn.com/community/questions/816512/npm-run-dev-%ED%96%88%EC%9D%84%EB%95%8C-%EC%9E%90%EB%8F%99-%EC%83%88%EB%A1%9C%EA%B3%A0%EC%B9%A8-%EB%AC%B8%EC%9D%98%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4)
             - `vite.config.js`에 아래 빨간 네모 박스 부분 추가.
-                [!vite error](./imgs/vite-error.png)
+                ![vite error](./imgs/vite-error.png)
                 ```javascript
                 server: {
                     watch: {
