@@ -132,3 +132,27 @@
         "source.fixAll.eslint": true,
     }
     ```
+
+### 프로젝트 템플릿 자동 생성
+- `vbase-3` 하게 되면 아래와 같이 보여진다.
+  ```javascript
+  <template>
+    <div>
+
+    </div>
+  </template>
+
+  <script>
+  export default {
+    setup () {
+      
+
+      return {}
+    }
+  }
+  </script>
+
+  <style lang="scss" scoped>
+
+  </style>
+  ```
