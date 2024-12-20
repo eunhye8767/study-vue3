@@ -212,7 +212,7 @@
   ```
 
 - **템플릿 문법**
-  - `v-once` : 데이터가 변경되어 갱신(반응)되지 않는 일회성 보간을 수행
+  - `v-once` : 데이터가 변경되어 갱신(반응)되지 않는 일회성 보간을 수행<br/>
     ![보간법 캡쳐](./imgs/241220-1.png)
     ```html
     <template>
@@ -244,7 +244,7 @@
 
   - `v-html` : html을 그대로 출력 
     - 다만 XSS 취약점으로 쉽게 이어질 수 있어 매우 위험할 소지가 있다.
-    - 따라서 신뢰할 수 있는 콘텐츠에서만 사용하고 **사용자가 제공한 콘텐츠에서는 절대 사용 불가**.
+    - 따라서 신뢰할 수 있는 콘텐츠에서만 사용하고 **사용자가 제공한 콘텐츠에서는 절대 사용 불가**.<br />
     ![html 캡쳐](./imgs/241220-2.png)
     ```html
     <template>
@@ -268,10 +268,10 @@
     <style lang="scss" scoped></style>
     ```
 
-  - `v-bind` : 실무에서 많이 사용 된다. title, disabled 등등
+  - `v-bind` : 실무에서 많이 사용 된다. title, disabled 등등<br />
     ![타이틀1](./imgs/241220-3.png)<br />
     ![타이틀2](./imgs/241220-4.png)<br />
-    - `disabled`을 `true`로 할 경우, 사용 불가 / `false`로 할 경우 사용 가능.
+    - `disabled`을 `true`로 할 경우, 사용 불가 / `false`로 할 경우 사용 가능.<br />
     ![disabled](./imgs/241220-3.png)
     ```html
     <template>
@@ -302,7 +302,7 @@
     <input type="text" value="이은혜" :disabled="isInputDisabled" />
     ```
 
-    - `v-bind`는 다중 속성 적용이 가능하다.
+    - `v-bind`는 다중 속성 적용이 가능하다.<br />
       ![input 다중 속성](./imgs/241220-6.png)
     ```html
     <template>
@@ -327,7 +327,7 @@
     <style lang="scss" scoped></style>
     ```
 
-  - **자바스크립트 표현식 사용 가능**
+  - **자바스크립트 표현식 사용 가능**<br />
     ![자바스크립트 표현식](./imgs/241220-7.png)
     ```html
     <template>
