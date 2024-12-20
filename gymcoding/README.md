@@ -159,6 +159,7 @@
 <hr />
 
 ### COMPOSITION API
+- **setup() 함수**
   ```javascript
   export default {
     props: {
@@ -195,7 +196,158 @@
   ```javascript
   export default {
     setup(props, { attrs, slots, emit, expose }) {
-      ...
+      // 속성($attrs와 동일한 비반응형 객체)
+      console.log(attrs);
+
+      // 슬롯($slots)에 해당하는 비반응성 객체
+      console.log(slots);
+
+      // 이벤트 발생($emit에 해당하는 함수)
+      console.log(emit);
+
+      // Public한 속성, 함수를 외부에 노출시에 사용
+      console.log(expose);
     }
   }
   ```
+
+- **템플릿 문법**
+  - `v-once` : 데이터가 변경되어 갱신(반응)되지 않는 일회성 보간을 수행
+    ![보간법 캡쳐](./imgs/241220-1.png)
+    ```html
+    <template>
+      <div>
+        <p>문자열: {{ message }}</p>
+        <h3>보간법</h3>
+        <!-- v-once : 데이터가 변경되어 갱신(반응)되지 않는 일회성 보간을 수행 -->
+        <p v-once>문자열: {{ message }}</p>
+        <button @click="btnOnce">변경</button>
+      </div>
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const message = ref('안녕하세요');
+        const btnOnce = () => {
+          message.value = `${message.value}!`;
+        };
+        return { message, btnOnce };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - `v-html` : html을 그대로 출력 
+    - 다만 XSS 취약점으로 쉽게 이어질 수 있어 매우 위험할 소지가 있다.
+    - 따라서 신뢰할 수 있는 콘텐츠에서만 사용하고 **사용자가 제공한 콘텐츠에서는 절대 사용 불가**.
+    ![html 캡쳐](./imgs/241220-2.png)
+    ```html
+    <template>
+      <h3>v-html</h3>
+      <!-- v-html: html을 그대로 출력 -->
+      <p>{{ rawHtml }}</p>
+      <p v-html="rawHtml"></p>
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const rawHtml = ref('<strong>안녕하세요옹!</strong>');
+        return { rawHtml };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - `v-bind` : 실무에서 많이 사용 된다. title, disabled 등등
+    ![타이틀1](./imgs/241220-3.png)<br />
+    ![타이틀2](./imgs/241220-4.png)<br />
+    - `disabled`을 `true`로 할 경우, 사용 불가 / `false`로 할 경우 사용 가능.
+    ![disabled](./imgs/241220-3.png)
+    ```html
+    <template>
+      <h3>속성 바인딩</h3>
+      <div title="안녕하세요">마우스를 올려보세요.</div>
+      <div v-bind:title="dynamicTitle">여기에 올려보세요오!!</div>
+      <input type="text" value="이은혜" v-bind:disabled="isInputDisabled" />
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const dynamicTitle = ref('다이나믹 타이틀');
+        const isInputDisabled = ref(true);
+        return { dynamicTitle, isInputDisabled };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+    - **자주 사용되는 `v-bind`는 `:`으로 사용된다.**
+    - **앞으로 본 강의에서는 `:`으로 단축 속성을 사용한다.**
+    ```html
+    <input type="text" value="이은혜" :disabled="isInputDisabled" />
+    ```
+
+    - `v-bind`는 다중 속성 적용이 가능하다.
+      ![input 다중 속성](./imgs/241220-6.png)
+    ```html
+    <template>
+      <input v-bind="attrs" />
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const attrs = ref({
+          type: 'password',
+          value: '1234',
+          disabled: false,
+        });
+        return { attrs };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - **자바스크립트 표현식 사용 가능**
+    ![자바스크립트 표현식](./imgs/241220-7.png)
+    ```html
+    <template>
+      <h3>JAVASCRIPT</h3>
+      {{ message.split('').reverse() }}
+      <br />
+      {{ isInputDisabled ? '예' : '아니오' }}
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const message = ref('안녕하세요');
+        const isInputDisabled = ref(true);
+        return { message, isInputDisabled };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
