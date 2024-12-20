@@ -272,7 +272,7 @@
     ![타이틀1](./imgs/241220-3.png)<br />
     ![타이틀2](./imgs/241220-4.png)<br />
     - `disabled`을 `true`로 할 경우, 사용 불가 / `false`로 할 경우 사용 가능.<br />
-    ![disabled](./imgs/241220-3.png)
+    ![disabled](./imgs/241220-5.png)
     ```html
     <template>
       <h3>속성 바인딩</h3>
