@@ -1,53 +1,52 @@
 <template>
-	<div>
-		<p>문자열: {{ message }}</p>
-		<h3>보간법</h3>
-		<!-- v-once : 데이터가 변경되어 갱신(반응)되지 않는 일회성 보간을 수행 -->
-		<p v-once>문자열: {{ message }}</p>
-		<button @click="btnOnce">변경</button>
-	</div>
-	<hr />
-	<h3>v-html</h3>
-	<!-- v-html: html을 그대로 출력 -->
-	<p>{{ rawHtml }}</p>
-	<p v-html="rawHtml"></p>
-	<hr />
-	<h3>속성 바인딩</h3>
-	<div title="안녕하세요">마우스를 올려보세요.</div>
-	<div v-bind:title="dynamicTitle">여기에 올려보세요오!!</div>
-	<input type="text" value="이은혜" :disabled="isInputDisabled" />
-	<br />
-	<br />
-	<input v-bind="attrs" />
-	<br />
-	<br />
-	<h3>JAVASCRIPT</h3>
-	{{ message.split('').reverse() }}
-	<br />
-	{{ isInputDisabled ? '예' : '아니오' }}
+	<div></div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { reactive, readonly, ref, toRef, toRefs } from 'vue';
 
 export default {
 	setup() {
-		const message = ref('안녕하세요');
-		const btnOnce = () => {
-			message.value = `${message.value}!`;
-		};
-
-		const rawHtml = ref('<strong>안녕하세요옹!</strong>');
-
-		const dynamicTitle = ref('다이나믹 타이틀');
-		const isInputDisabled = ref(true);
-
-		const attrs = ref({
-			type: 'password',
-			value: '1234',
-			disabled: false,
+		// ref ->  Object
+		const count = ref(0);
+		const state = reactive({
+			count,
 		});
-		return { message, btnOnce, rawHtml, dynamicTitle, isInputDisabled, attrs };
+		count.value++;
+		count.value++;
+
+		console.log(count.value);
+		console.log('state.count :', state.count);
+
+		// ref -> Array
+		const message = ref('Hello');
+		const arr = reactive([message]);
+		console.log('arr[0]', arr[0].value);
+
+		// 구조 분해 할당
+		const book = reactive({
+			author: 'vue team',
+			year: '2020',
+			title: 'vue 3 guide',
+			description: '당신은 지금 바로',
+			price: '무료',
+		});
+
+		// toRefs를 이용해 구조 분해 할당으로 반응형 유지
+		// const { author, title } = book; <- 반응형 안됨.
+		const { author, title } = toRefs(book);
+
+		// 하나의 데이터 값만 가져오고자 할 땐 toRef 사용
+		const price = toRef(book.price);
+
+		// readonly를 이용한 반응형 객체 변경 방지
+		const original = reactive({ count: 0 });
+		const copy = readonly(original);
+		original.count++;
+		copy.count++;
+		console.log(original.count);
+		console.log(copy.count);
+		return { author, title, book, price };
 	},
 };
 </script>
