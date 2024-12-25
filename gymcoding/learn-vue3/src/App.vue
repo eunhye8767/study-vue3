@@ -1,52 +1,68 @@
 <template>
-	<div></div>
+	<h2>{{ teacher.name }}</h2>
+	<h3>강의가 있습니까?</h3>
+	<!-- <p>{{ teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲' }}</p> -->
+	<p>{{ hasLecture }}</p>
+	<p>{{ existLecture() }}</p>
+	<button @:click="counter++">Counter: {{ counter }}</button>
+	<hr />
+	<h3>이름 :</h3>
+	<p>{{ fullName }}</p>
 </template>
 
 <script>
-import { reactive, readonly, ref, toRef, toRefs } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 export default {
 	setup() {
-		// ref ->  Object
-		const count = ref(0);
-		const state = reactive({
-			count,
-		});
-		count.value++;
-		count.value++;
-
-		console.log(count.value);
-		console.log('state.count :', state.count);
-
-		// ref -> Array
-		const message = ref('Hello');
-		const arr = reactive([message]);
-		console.log('arr[0]', arr[0].value);
-
-		// 구조 분해 할당
-		const book = reactive({
-			author: 'vue team',
-			year: '2020',
-			title: 'vue 3 guide',
-			description: '당신은 지금 바로',
-			price: '무료',
+		const teacher = reactive({
+			name: '짐코딩',
+			lectures: ['HTML/CSS', 'JavaScript', 'Vue3'],
 		});
 
-		// toRefs를 이용해 구조 분해 할당으로 반응형 유지
-		// const { author, title } = book; <- 반응형 안됨.
-		const { author, title } = toRefs(book);
+		// computed
+		const hasLecture = computed(() => {
+			console.log('computed');
+			return teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲';
+		});
+		// 한 줄만 있을 땐, return을 제거하고 아래와 같이 사용.
+		// const hasLecture = computed(() =>
+		// 	teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲',
+		// );
 
-		// 하나의 데이터 값만 가져오고자 할 땐 toRef 사용
-		const price = toRef(book.price);
+		// method
+		const existLecture = () => {
+			console.log('method');
+			return teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲';
+		};
 
-		// readonly를 이용한 반응형 객체 변경 방지
-		const original = reactive({ count: 0 });
-		const copy = readonly(original);
-		original.count++;
-		copy.count++;
-		console.log(original.count);
-		console.log(copy.count);
-		return { author, title, book, price };
+		// 같은 값을 보여줄지라도
+		// computed가 method(메서드)보다 비용 부분에서 적게 든다.
+		// computed => 브라우저 캐시에 저장이 된다.
+
+		const counter = ref(0);
+
+		const firstName = ref('홍');
+		const lastName = ref('길동');
+		const fullName = computed({
+			get() {
+				return firstName.value + ' ' + lastName.value;
+			},
+			set(newValue) {
+				[firstName.value, lastName.value] = newValue.split(' ');
+			},
+		});
+
+		fullName.value = '이 은혜';
+		return {
+			teacher,
+			hasLecture,
+			existLecture,
+			counter,
+			firstName,
+			lastName,
+			fullName,
+		};
 	},
 };
 </script>

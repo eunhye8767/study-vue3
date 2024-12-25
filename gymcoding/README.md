@@ -457,3 +457,141 @@
   ```
 
 - [(공식문서) 반응형 실험적 확인](https://vuejs.org/guide/extras/reactivity-transform.html)
+
+### Computed
+- `computed`와 `method`의 차이.
+  - `computed`는 계산된 값을 제공하며 브라우저 캐시에 저장이 된다.
+  - 반면, `method(메서드)`는 데이터 값이 변경될 때마다 값을 계산한다.
+  - **비용(속도)면에서 `computed`가 빠르다.**
+  ```html
+  <template>
+    <h2>{{ teacher.name }}</h2>
+    <h3>강의가 있습니까?</h3>
+    <!-- <p>{{ teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲' }}</p> -->
+    <p>{{ hasLecture }}</p>
+    <p>{{ existLecture() }}</p>
+  </template>
+
+  <script>
+  import { computed, reactive } from 'vue';
+
+  export default {
+    setup() {
+      const teacher = reactive({
+        name: '짐코딩',
+        lectures: ['HTML/CSS', 'JavaScript', 'Vue3'],
+      });
+
+      // computed
+      const hasLecture = computed(() =>
+        teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲',
+      );
+
+      // method
+      const existLecture = () =>
+        teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲';
+
+      return {
+        teacher, hasLecture, existLecture,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - 화살표 함수에서 return 1줄만 있을 때, 단축으로 사용할 수 있다.
+  ```javascript
+  const hasLecture = computed(() => {
+    return teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲';
+  });
+  ```
+  ```javascript
+  const hasLecture = computed(() =>
+    teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲',
+  );
+  ```
+
+- 브라우저 캐시에 저장된 `computed`는 단 한 번만 불러오고,<br />`method`는 계속 불러온다.<br />
+  ![콘솔로그 메서드 찍힘](./imgs/241225-1.png)
+  ```html
+  <template>
+    <h2>{{ teacher.name }}</h2>
+    <h3>강의가 있습니까?</h3>
+    <p>{{ hasLecture }}</p>
+    <p>{{ existLecture() }}</p>
+    <button @:click="counter++">Counter: {{ counter }}</button>
+  </template>
+
+  <script>
+  import { computed, reactive, ref } from 'vue';
+
+  export default {
+    setup() {
+      const teacher = reactive({
+        name: '짐코딩',
+        lectures: ['HTML/CSS', 'JavaScript', 'Vue3'],
+      });
+
+      // computed
+      const hasLecture = computed(() => {
+        console.log('computed');
+        return teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲';
+      });
+
+      // method
+      const existLecture = () => {
+        console.log('method');
+        return teacher.lectures.length > 0 ? '있음 😄' : '없음 🥲';
+      };
+
+      const counter = ref(0);
+
+      return {
+        teacher, hasLecture, existLecture, counter,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- `computed`는 기본적으로 getter 전용입니다.<br />
+  - 새로운 계산된 속성이 필요한 경우 => `getter`, `setter`를 모두 제공하여 속성을 만들 수 있다.
+  - **홍 길동**이 아닌 **이 은혜**로 보여진다.<br />
+    ![홍길동이 아닌 이은혜](./imgs/241225-2.png)
+  ```html
+  <template>
+    <h3>이름 :</h3>
+    <p>{{ fullName }}</p>
+  </template>
+
+  <script>
+  import { computed, ref } from 'vue';
+
+  export default {
+    setup() {
+      const firstName = ref('홍');
+      const lastName = ref('길동');
+      const fullName = computed({
+        get() {
+          return firstName.value + ' ' + lastName.value;
+        },
+        set(newValue) {
+          [firstName.value, lastName.value] = newValue.split(' ');
+        },
+      });
+
+      // fullName 이름을 변경.
+      fullName.value = '이 은혜';
+      return {
+        firstName, lastName, fullName,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
