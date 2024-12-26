@@ -595,3 +595,161 @@
 
   <style lang="scss" scoped></style>
   ```
+
+### Class와 Style 바인딩
+- **객체 바인딩**
+  - 클래스를 동적으로 바인딩 하기 위해서는 `:class(v-bind:class)`를 사용할 수 있다.
+  ```html
+  <div
+    class="text"
+    :class="{active: isActive, 'text-danger': hasError}"
+  ></div>
+  ```
+
+  - 아래 예시 처럼 `v-bind:class` 디렉티브는 `class` 속성과 공존할 수 있다.<br />그리고 객체를 반환하는 `computed`에 바인딩 할 수도 있다.
+  ```html
+  <template>
+    <div class="text" :class="{ active: isActive, 'text-danger': hasError }">
+      텍스트 입니다.
+    </div>
+    <button v-on:click="toggle">toggle</button>
+    <button v-on:click="hasError = !hasError">toggleError</button>
+  </template>
+
+  <script>
+  import { ref } from 'vue';
+
+  export default {
+    setup() {
+      const isActive = ref(true);
+      const hasError = ref(false);
+
+      const toggle = () => {
+        isActive.value = !isActive.value;
+      };
+      return { isActive, toggle, hasError };
+    },
+  };
+  </script>
+
+  <style scoped>
+  .active {
+    font-weight: 900;
+  }
+  .text-danger {
+    color: red;
+  }
+  </style>
+  ```
+
+  - 추가할 클래스가 여러 개 일 때, 묶어서 사용할 수 있다.
+  ```html
+  <template>
+    <div class="text" :class="classObject">텍스트 입니다.</div>
+    <button v-on:click="toggle">toggle</button>
+    <button v-on:click="hasError = !hasError">toggleError</button>
+  </template>
+
+  <script>
+  import { computed, ref } from 'vue';
+
+  export default {
+    setup() {
+      const isActive = ref(true);
+      const hasError = ref(false);
+
+      // const classObject = reactive({
+      // 	active: true,
+      // 	'text-danger': false,
+      // });
+
+      const classObject = computed(() => {
+        return {
+          active: isActive.value & true,
+          'text-danger': hasError.value && true,
+        };
+      });
+
+      const toggle = () => {
+        isActive.value = !isActive.value;
+      };
+      return { isActive, toggle, hasError, classObject };
+    },
+  };
+  </script>
+
+  <style scoped>
+  .active {
+    font-weight: 900;
+  }
+  .text-danger {
+    color: red;
+  }
+  </style>
+  ```
+
+  - 배열로도 적용할 수 있다.
+  ```html
+  <template>
+    <div class="text" :class="classObject">텍스트 입니다.</div>
+    <div
+      class="text"
+      :class="[isActive ? 'active-class' : 'class', errorClass, classObject]"
+    >
+      텍스트 222
+    </div>
+    <button v-on:click="toggle">toggle</button>
+    <button v-on:click="hasError = !hasError">toggleError</button>
+  </template>
+
+  <script>
+  import { computed, ref } from 'vue';
+
+  export default {
+    setup() {
+      const isActive = ref(true);
+      const hasError = ref(false);
+
+      // const classObject = reactive({
+      // 	active: true,
+      // 	'text-danger': false,
+      // });
+
+      const classObject = computed(() => {
+        return {
+          active: isActive.value & true,
+          'text-danger': hasError.value && true,
+          'text-blue': true,
+        };
+      });
+
+      const toggle = () => {
+        isActive.value = !isActive.value;
+      };
+
+      const activeClass = ref('active');
+      const errorClass = ref('error');
+      return {
+        isActive,
+        toggle,
+        hasError,
+        classObject,
+        activeClass,
+        errorClass,
+      };
+    },
+  };
+  </script>
+
+  <style scoped>
+  .active {
+    font-weight: 900;
+  }
+  .text-blue {
+    color: blue;
+  }
+  .text-danger {
+    color: red;
+  }
+  </style>
+  ```
