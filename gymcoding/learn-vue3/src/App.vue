@@ -1,38 +1,47 @@
 <template>
 	<div>
-		<h2 v-if="visible">Hello Vue3!</h2>
-		<h2 v-else>false 입니다.</h2>
-		<button v-on:click="visible = !visible">toggle</button>
-		<hr />
-		<h2 v-if="type === 'A'">A 입니다.</h2>
-		<h2 v-else-if="type === 'B'">B 입니다.</h2>
-		<h2 v-else-if="type === 'C'">C 입니다.</h2>
-		<h2 v-else>A, B, C가 아닙니다.</h2>
-		<button v-on:click="type = 'A'">A</button>
-		<button v-on:click="type = 'B'">B</button>
-		<button v-on:click="type = 'C'">C</button>
-		<button v-on:click="type = 'D'">D</button>
-		<hr />
-		<template v-if="visible">
-			<h1>title</h1>
-			<p>paragraph 1</p>
-			<p>paragraph 2</p>
-		</template>
-		<hr />
-		<h1 v-show="ok">Title 입니다.</h1>
-		<button v-on:click="ok = !ok">show toggle</button>
+		<ul>
+			<!-- <template v-for="(item, index) in items" :key="item.id">
+				<li v-if="item.id % 2 === 0">
+					ID: {{ item.id }} 인덱스 : {{ index }}, {{ item.message }}
+				</li>
+			</template> -->
+			<template v-for="(item, index) in evenItems" :key="item.id">
+				<li>ID: {{ item.id }} 인덱스 : {{ index }}, {{ item.message }}</li>
+			</template>
+			<!-- <li v-for="(item, index) in items" :key="item.id">
+				인덱스 : {{ index }}, {{ item.message }}
+			</li> -->
+		</ul>
 	</div>
+	<hr />
+	<ul>
+		<li v-for="(value, key, index) in myObject" :key="index">
+			{{ index }} - {{ key }} - {{ value }}
+		</li>
+	</ul>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed, reactive } from 'vue';
 
 export default {
 	setup() {
-		const visible = ref(false);
-		const type = ref('B');
-		const ok = ref(true);
-		return { visible, type, ok };
+		const items = reactive([
+			{ id: 1, message: 'JAVA' },
+			{ id: 2, message: 'HTML' },
+			{ id: 3, message: 'CSS' },
+			{ id: 4, message: 'VUE' },
+		]);
+
+		const evenItems = computed(() => items.filter(item => item.id % 2 === 0));
+
+		const myObject = reactive({
+			title: '제목',
+			author: '홍길동',
+			publishedAt: '2020-12-30',
+		});
+		return { items, evenItems, myObject };
 	},
 };
 </script>

@@ -876,3 +876,128 @@
 
 #### v-if와 v-for로 함께 사용하는 것을 권장하지 않는다.<br />v-for보다 v-if가 우선순위를 갖는다.
 
+<br />
+
+### 목록 렌더링 (v-for)
+- `v-for=item in items` 문법을 사용해서 배열에서 항목을 순차적으로 할당.
+- `v-for="(item, index) in items"` 문법을 사용해서 배열 인덱스를 가져올 수 있다.
+- **항목을 나열할 때, 각 `:key` 속성에는 고유한 값을 지정해야 한다. (vue 2.2.0 부터 필수)
+  ```html
+  <template>
+    <div>
+      <ul>
+        <li v-for="(item, index) in items" :key="item.id">
+          인덱스 : {{ index }}, {{ item.message }}
+        </li>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+  import { reactive } from 'vue';
+
+  export default {
+    setup() {
+      const items = reactive([
+        { id: 1, message: 'JAVA' },
+        { id: 2, message: 'HTML' },
+        { id: 3, message: 'CSS' },
+        { id: 4, message: 'VUE' },
+      ]);
+
+      return { items };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - `id`가 짝수인 것만 목록으로 추려본다.
+  ```html
+  <template>
+    <div>
+      <ul>
+        <template v-for="(item, index) in items" :key="item.id">
+          <li v-if="item.id % 2 === 0">
+            ID: {{ item.id }} 인덱스 : {{ index }}, {{ item.message }}
+          </li>
+        </template>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+  import { reactive } from 'vue';
+
+  export default {
+    setup() {
+      const items = reactive([
+        { id: 1, message: 'JAVA' },
+        { id: 2, message: 'HTML' },
+        { id: 3, message: 'CSS' },
+        { id: 4, message: 'VUE' },
+      ]);
+
+      return { items };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - `id`가 짝수인 것만 추릴 때, `computed`를 활용한다.
+  ```html
+  <template>
+    <div>
+      <ul>
+        <template v-for="(item, index) in evenItems" :key="item.id">
+          <li>ID: {{ item.id }} 인덱스 : {{ index }}, {{ item.message }}</li>
+        </template>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+  import { computed, reactive } from 'vue';
+
+  export default {
+    setup() {
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- `v-for` 객체<br />
+  ![v-for 객체 순서대로 뿌리기](./imgs/241230-2.png)
+  ```html
+  <template>
+    <ul>
+      <li v-for="(value, key, index) in myObject" :key="index">
+        {{ index }} - {{ key }} - {{ value }}
+      </li>
+    </ul>
+  </template>
+
+  <script>
+  import { reactive } from 'vue';
+
+  export default {
+    setup() {
+      const myObject = reactive({
+        title: '제목',
+        author: '홍길동',
+        publishedAt: '2020-12-30',
+      });
+      return { myObject };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- [자바스크립트 유용한 Array APIs | map, reduce, filter, some, every](https://www.youtube.com/watch?v=bIHvodwsO-o)
