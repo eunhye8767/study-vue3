@@ -824,3 +824,55 @@
 
   <style scoped></style>
   ```
+
+### 조건부 렌더링 (v-if, v-show)
+- 특정 조건에 따라 렌더링 `v-if`, `v-else`, `v-else-if`, `v-show`.
+  - `v-if` : 실제 렌더링이 된다.
+  - `v-show` : `style="display: none"`로 렌더링은 되지만 css 속성으로 화면에서 가려진다. **UI 다름.**<br />
+    ![v-if와 다른 v-show](./imgs/241230-1.png)
+  - `v-if`는 전환 비용이 높은 반면, `v-show`는 초기 렌더링 비용이 높다.<br />무언가를 자주 전환해야 한다면 `v-show`를 사용하는 것이 좋고,<br />런타임 시 조건이 변경되지 않으면 `v-if`를 사용 하는 것이 낫다.
+  ```html
+  <template>
+    <div>
+      <h2 v-if="visible">Hello Vue3!</h2>
+      <h2 v-else>false 입니다.</h2>
+      <button v-on:click="visible = !visible">toggle</button>
+      <hr />
+      <h2 v-if="type === 'A'">A 입니다.</h2>
+      <h2 v-else-if="type === 'B'">B 입니다.</h2>
+      <h2 v-else-if="type === 'C'">C 입니다.</h2>
+      <h2 v-else>A, B, C가 아닙니다.</h2>
+      <button v-on:click="type = 'A'">A</button>
+      <button v-on:click="type = 'B'">B</button>
+      <button v-on:click="type = 'C'">C</button>
+      <button v-on:click="type = 'D'">D</button>
+      <hr />
+      <template v-if="visible">
+        <h1>title</h1>
+        <p>paragraph 1</p>
+        <p>paragraph 2</p>
+      </template>
+      <hr />
+      <h1 v-show="ok">Title 입니다.</h1>
+      <button v-on:click="ok = !ok">show toggle</button>
+    </div>
+  </template>
+
+  <script>
+  import { ref } from 'vue';
+
+  export default {
+    setup() {
+      const visible = ref(false);
+      const type = ref('B');
+      const ok = ref(true);
+      return { visible, type, ok };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+#### v-if와 v-for로 함께 사용하는 것을 권장하지 않는다.<br />v-for보다 v-if가 우선순위를 갖는다.
+
