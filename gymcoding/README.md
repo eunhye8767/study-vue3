@@ -1067,4 +1067,90 @@
   <p v-pre>{{ 이곳은 컴파일 되지 않습니다. }}</p>
   ```
 
+- `v-once` : **한 번만 렌더링** 한다.<br />버튼을 클릭해도 변함이 전.혀.없.다.
+  ```html
+  <template>
+    <div>
+      <div v-once>
+        <p>subscribers : {{ subscribers }}</p>
+        <p>views : {{ views }}</p>
+        <p>likes : {{ likes }}</p>
+      </div>
+      <button @click="subscribers++">Subs++</button>
+      <button @click="views++">Views++</button>
+      <button @click="likes++">Like++</button>
+    </div>
+  </template>
+
+  <script>
+  import { ref } from 'vue';
+
+  export default {
+    setup() {
+      const subscribers = ref(4000);
+      const views = ref(400);
+      const likes = ref(20);
+
+      return {
+        subscribers,
+        views,
+        likes,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
 - `v-memo` : 성능과 관련된 디렉티브.
+  - `v-memo`는 얼핏 보기엔 `v-once`와 비슷하지만, `[]` **배열 안에 반응형 데이터에 따라 변함에 따라 렌더링 된다.**
+  - 아래와 같을 경우, `views` 버튼을 누르면 그 때 같이 업데이트된 값이 보여진다.
+  ```html
+  <template>
+    <div>
+      <div v-memo="[views]">
+        <p>subscribers : {{ subscribers }}</p>
+        <p>views : {{ views }}</p>
+        <p>likes : {{ likes }}</p>
+      </div>
+      <button @click="subscribers++">Subs++</button>
+      <button @click="views++">Views++</button>
+      <button @click="likes++">Like++</button>
+      <div>
+        <p>subscribers : {{ subscribers }}</p>
+        <p>views : {{ views }}</p>
+        <p>likes : {{ likes }}</p>
+      </div>
+    </div>
+  </template>
+
+  <script>
+  import { ref } from 'vue';
+
+  export default {
+    setup() {
+      const subscribers = ref(4000);
+      const views = ref(400);
+      const likes = ref(20);
+
+      return {
+        subscribers,
+        views,
+        likes,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - 공식 문서의 따르면 `v-for`에서 length > 1000일 때 사용하면 된다고 예제에 보여지긴 함.<br />[vue v-memo 공식문서 바로보기](https://ko.vuejs.org/api/built-in-directives#v-memo)
+    ```html
+    <div v-for="item in list" :key="item.id" v-memo="[item.id === selected]">
+      <p>ID: {{ item.id }} - 선택됨: {{ item.id === selected }}</p>
+      <p>...더 많은 자식 노드</p>
+    </div>
+    ```
+  

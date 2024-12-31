@@ -1,8 +1,18 @@
 <template>
 	<div>
-		<p v-text="msg"></p>
-		<p v-html="htmlStr"></p>
-		<p v-pre>{{ 이곳은 컴파일 되지 않습니다. }}</p>
+		<div v-memo="[views]">
+			<p>subscribers : {{ subscribers }}</p>
+			<p>views : {{ views }}</p>
+			<p>likes : {{ likes }}</p>
+		</div>
+		<button @click="subscribers++">Subs++</button>
+		<button @click="views++">Views++</button>
+		<button @click="likes++">Like++</button>
+		<div>
+			<p>subscribers : {{ subscribers }}</p>
+			<p>views : {{ views }}</p>
+			<p>likes : {{ likes }}</p>
+		</div>
 	</div>
 </template>
 
@@ -11,9 +21,15 @@ import { ref } from 'vue';
 
 export default {
 	setup() {
-		const msg = ref('안녕하세요');
-		const htmlStr = ref('<strong>안녕</strong>');
-		return { msg, htmlStr };
+		const subscribers = ref(4000);
+		const views = ref(400);
+		const likes = ref(20);
+
+		return {
+			subscribers,
+			views,
+			likes,
+		};
 	},
 };
 </script>
