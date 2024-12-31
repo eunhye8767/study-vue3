@@ -1001,3 +1001,70 @@
   ```
 
 - [자바스크립트 유용한 Array APIs | map, reduce, filter, some, every](https://www.youtube.com/watch?v=bIHvodwsO-o)
+
+### 디렉티브 (강의 설명란 필수 확인!)
+- 디렉티브(directives)는 `v-` 접두사가 있는 특수 속성.
+- 디렉티브는 그대로 직역하면 지시를 뜻한다.
+- 디렉티브는 기능상에서 중요한 역할인 컴포넌트(또는 DOM 요소)에게 **"~~하게 작동하라"** 하고 지시를 해주는 지시문.
+- `vuejs` 내장 디렉티브 : [공식 홈페이지 설명](https://vuejs.org/api/built-in-directives.html#v-text)
+  ```html
+  v-text                    v-on (단축표기 @)
+  v-html                    v-bind (단축표기 :) 
+  v-show                    v-model
+  v-if                      v-slot (단축표기 #)
+  v-else                    v-pre
+  v-else-if                 v-once
+  v-for                     v-cloak
+                            v-memo (v3.2+)
+  ```
+
+- `v-cloak` 예제
+  - 현업에서는 잘 사용하진 않지만, 예시로 알아두기.<br/>
+    ![v-cloak 캡쳐](./imgs/241231-1.png)
+  - `v-cloak` 경우, UI 적으로 화면에 보여졌다가 사라지는 것을 볼 수 있다.
+  - 해서, style 속성에 `[v-cloak]`를 `display: none`으로 하게 되면 화면에서 사라진 것을 확인할 수 있다.
+  - 로딩바 등으로 활용할 수 있다.
+  ```html
+  <!-- index_cloak.html -->
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <link rel="icon" href="/favicon.ico" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+      <title>Vite App</title>
+      <style>
+        [v-cloak] {
+          display: none;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="app">
+        <p v-cloak>{{message}}</p>
+      </div>
+
+      <script>
+        const App = {
+          data() {
+            return {
+              message: "안녕하세요"
+            }
+          }
+        }
+
+        setTimeout(() => {
+          Vue.createApp(App).mount('#app')
+        }, 3000)
+      </script>
+    </body>
+  </html>
+  ```
+
+- `v-pre` : v-pre가 있는 엘리먼트 내에서 모든 Vue 템플릿 구문은 그대로 유지되고 렌더링됩니다.<br />가장 일반적인 사용 사례는 이중 중괄호 태그를 표시하는 것입니다.
+  ```html
+  <p v-pre>{{ 이곳은 컴파일 되지 않습니다. }}</p>
+  ```
+
+- `v-memo` : 성능과 관련된 디렉티브.
