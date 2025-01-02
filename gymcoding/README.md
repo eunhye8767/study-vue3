@@ -1154,3 +1154,89 @@
     </div>
     ```
   
+### 이벤트 처리
+- [이벤트 버블링&캡쳐링 | stopPropagation() | preventDefault()](https://www.youtube.com/watch?v=0jtalJxrxhs)
+- [공식 문서 : v-on 설명 바로보기](https://ko.vuejs.org/api/built-in-directives#v-on)
+  ```html
+  <template>
+    <div>
+      <button @click="printEventInfo('hello vue3', $event)">
+        inline event handler
+      </button>
+      <hr />
+      <input type="text" @keyup="onKeyupHandler" />
+    </div>
+  </template>
+
+  <script>
+  export default {
+    setup() {
+      const printEventInfo = (message, event) => {
+        console.log(message);
+        console.log('event.target', event.target);
+        console.log('event.target.tagName', event.target.tagName);
+      };
+
+      const onKeyupHandler = event => {
+        console.log('event.key :', event.key);
+      };
+
+      return {
+        printEventInfo,
+        onKeyupHandler,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- (예시) `v-on:submit.prevent="onSubmit"`
+  - Name: v-on
+  - Argument : submit
+  - Modifiers(수식어) : .prevent
+    - `event.preventDefault()` 또는 `event.stopPropagation()` 메서드를 호출할 수 있다.<br />
+    메서드에서 이러한 메소드의 호출은 어렵지 않지만 메소드 안에서 비즈니스 외에 이러한 코드는 비효율적이다.<br />
+    이 문제를 해결하기 위해 Vue는 `v-on` 이벤트에 다양한 이벤트 수식어(Modifiers)를 제공한다.
+      ```html
+      .stop = e.stopPropagation()
+      .prevent = e.preventDefault()
+      .capture = 캡쳐 모드를 사용할 때 이벤트 리스너를 사용 가능.
+      .self = 오로지 자기 자신만 호출. 즉 타깃요소가 self일 때 발동.
+      .once = 해당 이벤트는 한 번만 실행.
+      .passive = 일반적으로 모바일 장치의 성능을 개선하기 위해  터치 이벤트 리스너와 함께 사용된다.
+        ㄴ <div @scroll.passive="onScroll">...</div>
+      ```
+
+      - 수식어는 연달아 사용이 가능하다.
+      - 기본 기능도 막으면서 이벤트 버블링 현상도 막아준다. === `.prevent.stop`
+      ```html
+      <a href="https://www.naver.com" @click.prevent.stop="clickA">a 영역</a>
+      ```
+  - value : onSubmit
+
+- **키 수식어**
+  - 키보드 이벤트를 수신할 때, 종종 특정 키를 확인해야 하는 경우가 있다.<br />그래서 vue에서는 v`v-on` 또는 `@` 다랙티브에 키 수식어를 제공한다.
+  ```html
+  .enter
+  .tab
+  .delete : Delete와 Backspace 키 모두를 수신.
+  .esc
+  .space
+  .up
+  .down
+  .left
+  .right
+
+  <input type="text" @keyup.enter="addTodo" />
+  ```
+
+- **시스템 키 수식어**
+  - 다음 수식어를 사용해 해당 수식어 키가 눌러진 경우에만 마우스 또는 키보드 이벤트 리스너를 트리거 할 수 있다.
+  ```html
+  .ctrl
+  .alt
+  .shift
+  .meta : mac에서는 command key, window애서는 window(윈도우) key. 특정 키보드에서 조금 다를 수 있음.
+  ```

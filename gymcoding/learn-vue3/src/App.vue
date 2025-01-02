@@ -1,34 +1,33 @@
 <template>
 	<div>
-		<div v-memo="[views]">
-			<p>subscribers : {{ subscribers }}</p>
-			<p>views : {{ views }}</p>
-			<p>likes : {{ likes }}</p>
-		</div>
-		<button @click="subscribers++">Subs++</button>
-		<button @click="views++">Views++</button>
-		<button @click="likes++">Like++</button>
-		<div>
-			<p>subscribers : {{ subscribers }}</p>
-			<p>views : {{ views }}</p>
-			<p>likes : {{ likes }}</p>
-		</div>
+		<!-- <input type="text" @keyup.enter="addTodo" /> -->
+		<!-- <input type="text" @keypress.enter="addTodo" /> -->
+		<input type="text" @keypress.ctrl.enter="addTodo" />
+
+		<ul>
+			<li v-for="(todo, index) in todos" :key="index">
+				{{ todo }}
+			</li>
+		</ul>
 	</div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { reactive } from 'vue';
 
 export default {
 	setup() {
-		const subscribers = ref(4000);
-		const views = ref(400);
-		const likes = ref(20);
+		const todos = reactive([]);
+
+		const addTodo = event => {
+			todos.push(event.target.value);
+			event.target.value = '';
+			event.target.focus();
+		};
 
 		return {
-			subscribers,
-			views,
-			likes,
+			todos,
+			addTodo,
 		};
 	},
 };
