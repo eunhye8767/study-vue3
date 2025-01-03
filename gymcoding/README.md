@@ -1240,3 +1240,113 @@
   .shift
   .meta : mac에서는 command key, window애서는 window(윈도우) key. 특정 키보드에서 조금 다를 수 있음.
   ```
+
+### 양방향 바인딩 (v-model)
+- `value`를 바인딩하고 `@input` 이벤트로 `text`를 변경하는 것은 번거로울 수 있다.<br />vue에서는 이러한 작업은 단순화 하도록 양방향을 바인딩할 수 있는 `v-model` 디렉티브를 제공한다.
+  - checkbox, radio, textarea 등 속성에 따라 `v-model`로 처리할 수 있다.
+  ```html
+  <template>
+    <div>
+      <h2>Input Value</h2>
+      <input type="text" v-model="inputValue" />
+      <!-- :value="inputValue"
+        @input="event => (inputValue = event.target.value)" 
+        ==> 이렇게ㅔ value, @input 이벤트를 동시에 제공하는 "양반향 바인딩"
+      -->
+      <div>{{ inputValue }}</div>
+      <hr />
+      <h2>textarea value</h2>
+      <textarea v-model="textareaValue"></textarea>
+      <div>{{ textareaValue }}</div>
+      <hr />
+      <h2>input checkbox</h2>
+      <label for="checkbox">{{ checkboxValue }}</label>
+      <input type="checkbox" id="checkbox" v-model="checkboxValue" />
+      <hr />
+      <h2>checkbox values</h2>
+      <label>
+        <input
+          type="checkbox"
+          id="checkbox"
+          v-model="checkboxValues"
+          value="html"
+        />
+        html
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          id="checkbox"
+          v-model="checkboxValues"
+          value="css"
+        />
+        css
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          id="checkbox"
+          v-model="checkboxValues"
+          value="javascript"
+        />
+        javascript
+      </label>
+      <div>{{ checkboxValues }}</div>
+      <hr />
+      <h2>input radio</h2>
+      <label>
+        <input type="radio" name="type" value="O" v-model="radioValue" />
+        O형
+      </label>
+      <label>
+        <input type="radio" name="type" value="A" v-model="radioValue" />
+        A형
+      </label>
+      <div>선택한 혈액형 : {{ radioValue }}형</div>
+      <hr />
+      <h2>Select Value</h2>
+      <select v-model="selectValue">
+        <option value="html">html</option>
+        <option value="javascript">javascript</option>
+        <option value="css">css</option>
+      </select>
+      <div>선택한 강좌 : {{ selectValue }} 입니다.</div>
+    </div>
+  </template>
+
+  <script>
+  import { ref } from 'vue';
+
+  export default {
+    setup() {
+      const inputValue = ref(null);
+      const textareaValue = ref(null);
+      const checkboxValue = ref(false);
+      const radioValue = ref('O');
+      const selectValue = ref('html');
+
+      return {
+        inputValue,
+        textareaValue,
+        checkboxValue,
+        radioValue,
+        selectValue,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - 체크박스에서 true일 땐, Yes / false일 땐, No로 나타낼 수도 있다.
+  ```html
+  <input
+    type="checkbox"
+    id="checkbox"
+    v-model="checkboxValue"
+    true-value="Yes"
+    false-value="No"
+  />
+  ```
+
