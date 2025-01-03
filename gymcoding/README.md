@@ -1350,3 +1350,18 @@
   />
   ```
 
+- **`v-model` 수식어 (modifiiers)**
+  - `.lazy` : `v-model`은 각 `input` 이벤트 후 입력과 데이터를 동기화. **=== Focus Out일 때**<br />단, 앞에서 설명한 IME 구성은 제외. `lazy` 수식어를 추가하여 `change` 이벤트 이후에 동기화할 수 있다.
+  ```html
+  <input type="text" v-model.lazy="inputValue" />
+  ```
+
+  - `.number` : 사용자 입력이 자동으로 number 타입으로 형변환 되기를 원할 때
+  ```html
+  <input type="text" v-model.number="inputValue" />
+  ```
+
+  - `.trim` : 사용자가 입력한 내용에서 자동으로 앞뒤 공백을 제거하는 트림 처리가 되길 바란다면
+  ```html
+  <input type="text" v-model.trim="inputValue" />
+  ```
