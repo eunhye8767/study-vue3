@@ -1339,6 +1339,103 @@
   <style lang="scss" scoped></style>
   ```
 
+  - **v-model 없었을 때, 아래와 같이 적용한다.**
+    ```html
+    <template>
+      <div>
+        <h2>Input Value</h2>
+        <!-- <input type="text" v-model="inputValue" /> -->
+        <input
+          type="text"
+          :value="inputValue"
+          @input="event => (inputValue = event.target.value)"
+        />
+        <div>{{ inputValue }}</div>
+        <hr />
+        <h2>textarea value</h2>
+        <!-- <textarea v-model="textareaValue"></textarea> -->
+        <textarea
+          :value="textareaValue"
+          @input="event => (textareaValue = event.target.value)"
+        ></textarea>
+        <div>{{ textareaValue }}</div>
+        <hr />
+        <h2>input checkbox</h2>
+        <label for="checkbox">{{ checkboxValue }}</label>
+        <!-- <input type="checkbox" id="checkbox" v-model="checkboxValue" /> -->
+        <input
+          type="checkbox"
+          id="checkbox"
+          :checked="checkboxValue"
+          @change="event => (checkboxValue = event.target.checked)"
+        />
+        <hr />
+        <h2>input radio</h2>
+        <label>
+          <!-- <input type="radio" name="type" value="O" v-model="radioValue" /> -->
+          <input
+            type="radio"
+            name="type"
+            value="O"
+            :checked="radioValue === 'O'"
+            @change="event => (radioValue = event.target.value)"
+          />
+          O형
+        </label>
+        <label>
+          <!-- <input type="radio" name="type" value="A" v-model="radioValue" /> -->
+          <input
+            type="radio"
+            name="type"
+            value="A"
+            :checked="radioValue === 'A'"
+            @change="event => (radioValue = event.target.value)"
+          />
+          A형
+        </label>
+        <div>선택한 혈액형 : {{ radioValue }}형</div>
+        <hr />
+        <h2>Select Value</h2>
+        <!-- <select v-model="selectValue"> -->
+        <select
+          :value="selectValue"
+          @change="event => (selectValue = event.target.value)"
+        >
+          <option value="html">html</option>
+          <option value="javascript">javascript</option>
+          <option value="css">css</option>
+        </select>
+        <div>선택한 강좌 : {{ selectValue }} 입니다.</div>
+      </div>
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const inputValue = ref(null);
+        const textareaValue = ref(null);
+        const checkboxValue = ref(false);
+        const checkboxValues = ref([]);
+        const radioValue = ref('O');
+        const selectValue = ref('html');
+
+        return {
+          inputValue,
+          textareaValue,
+          checkboxValue,
+          checkboxValues,
+          radioValue,
+          selectValue,
+        };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
   - 체크박스에서 true일 땐, Yes / false일 땐, No로 나타낼 수도 있다.
   ```html
   <input
@@ -1351,7 +1448,7 @@
   ```
 
 - **`v-model` 수식어 (modifiiers)**
-  - `.lazy` : `v-model`은 각 `input` 이벤트 후 입력과 데이터를 동기화. **=== Focus Out일 때**<br />단, 앞에서 설명한 IME 구성은 제외. `lazy` 수식어를 추가하여 `change` 이벤트 이후에 동기화할 수 있다.
+  - `.lazy` : `v-model`은 각 `input` 이벤트 후 입력과 데이터를 동기화. **=== Focus Out일 때**<br />단, 앞에서 설명한 IME (중국어, 일본어, 한국어 등) 구성은 제외. `lazy` 수식어를 추가하여 `change` 이벤트 이후에 동기화할 수 있다.
   ```html
   <input type="text" v-model.lazy="inputValue" />
   ```
