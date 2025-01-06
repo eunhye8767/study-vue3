@@ -1462,3 +1462,75 @@
   ```html
   <input type="text" v-model.trim="inputValue" />
   ```
+
+### Watch, WatchEffect
+- 어떤 상태가 변경되었거나 DOM을 변경하거나 비동기 작업을 해서 다른 상태를 변경하는 것.
+- `Composition API`의 `watch` 함수를 사용하여 반응형 상태가 변경될 때마다 특정 작업을 수행할 수 있다.
+  ```html
+  watch(감지할 반응형 데이터, (변경될 데이터, 이전(현재) 값) => {
+  })
+
+  watch(message, (newValue, oldValue) => {
+    // DOM 변경
+
+    // API 호출
+
+    // state 변경
+    console.log('newValue: ', newValue);
+    console.log('oldValue: ', oldValue);
+  });
+  ```
+- 반응형 데이터 경우, `ref`, `reactive`, `computed`, `getter 함수`, `array` 타입이 될 수 있다.
+  ```html
+  <template>
+    <div></div>
+  </template>
+
+  <script>
+  import { reactive, ref, watch } from 'vue';
+
+  export default {
+    setup() {
+      const x = ref(0);
+      const y = ref(0);
+
+      // watch(
+      // 	() => x.value + y.value,
+      // 	(sum, oldValue) => {
+      // 		console.log('oldValue: ', oldValue);
+      // 		console.log('sum: ', sum);
+      // 	},
+      // 	// sum => {
+      // 	// 	console.log('sum: ', sum);
+      // 	// },
+      // );
+
+      watch([x, y], ([newX, newY], [oldX, oldY]) => {
+        console.log('oldX:', oldX, 'oldY:', oldY);
+        console.log('newX:', newX, 'newY:', newY);
+      });
+
+      const obj = reactive({
+        count: 0,
+      });
+
+      // watch(obj, (newValue, oldValue) => {
+      // 	console.log('oldValue:', oldValue);
+      // 	console.log('newValue:', newValue);
+      // });
+      watch(
+        // obj(오브젝트)의 count 속성처럼 감지하고 싶을 땐 getter 함수를 사용하여 작업한다.
+        // getter 함수 == () => obj.count
+        () => obj.count,
+        (newValue, oldValue) => {
+          console.log('oldValue:', oldValue);
+          console.log('newValue:', newValue);
+        },
+      );
+      return { x, y, obj };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
