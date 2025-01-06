@@ -43,7 +43,30 @@ export default {
 				console.log('newValue:', newValue);
 			},
 		);
-		return { x, y, obj };
+
+		const person = reactive({
+			name: '홍길동',
+			age: 39,
+			hobby: '운동',
+			obj: {
+				count: 0,
+			},
+		});
+
+		// watch(person, (newValue, oldValue) => {
+		// 	console.log('oldValue:', oldValue);
+		// 	console.log('newValue:', newValue);
+		// });
+		watch(
+			// person의 obj가 변경될 경우에만 감지.
+			// person의 obj 안에 count 값이 바뀌어도 변화 없다. 콘솔로그 없다.
+			() => person.obj,
+			(newValue, oldValue) => {
+				console.log('oldValue:', oldValue);
+				console.log('newValue:', newValue);
+			},
+		);
+		return { x, y, obj, person };
 	},
 };
 </script>
