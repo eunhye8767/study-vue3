@@ -1534,3 +1534,123 @@
 
   <style lang="scss" scoped></style>
   ```
+
+- **`immediate` 즉시 실행**
+  - `immediate` 옵션을 사용하여 최초의 즉시 실행 할 수 있다.
+  ```html
+  <template>
+    <div>
+      <p>{{ message }}</p>
+      <p>{{ reversMessage }}</p>
+    </div>
+  </template>
+
+  <script>
+  import { ref, watch } from 'vue';
+
+  export default {
+    setup() {
+      const message = ref('hellow');
+      const reversMessage = ref('');
+
+      watch(
+        message,
+        newValue => {
+          console.log('즉시 실행');
+          reversMessage.value = newValue.split('').reverse().join('');
+        },
+        {
+          // 즉시 실행
+          immediate: true,
+        },
+      );
+
+      return {
+        message,
+        reversMessage,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- **computed와 watch 어떻게 사용할 것인가?**
+  - `computed` :<br />vue 인스턴스의 상태(`ref`, `reactive 변수`)의 종속 관계를 자동으로 세팅하고자 할 때는 `computed`로 구현하는 것이 좋다.<br />위 예시처럼 `reverseMessage`는 `message` 값에 따라 결정되어 지는 종속 관계에 있다.<br />이 종속 관계 코드가 복잡해지면 `watch`로 구현할 경우 더 복잡해지거나 중복 계산 또는 오류를 발생시킬 수 있다.
+  - `watch` :<br />vue 인스턴스의 상태(`ref`, `reactive 변수`)의 변경 시점에에 특정 액션(call api, push route 등)을 취하고자 할 때 적합하다.<br />대게의 경우 `computed`로 구현 가능한 것이라면 `watch`가 아니라 `computed`로 구현하는 것이 옳다.
+
+- **WatchEffect**
+  - 콜백 함수 안의 반응성 데이터에 변화가 감지되면 자동으로 반응하여 실행한다.<br />그리고 watchEffect의 코드는 컴포넌트가 생성될 때 즉시 실행된다.
+  ```javascript
+  watchEffect(async () => {
+    const { data } = await axios.get(`https:reqres.in/api/users?page=${page.value}`);
+    items.value = data.data;
+  })
+  ```
+
+  - `form`(폼)에서 데이터를 보낼 때, 예시
+  ```html
+  <template>
+    <div>
+      <!-- 방법 1. form 경우 기본적으로 submit -->
+      <form action="" @submit.prevent="save(title, contents)">
+        <input v-model.lazy="title" type="text" placeholder="title" />
+        <textarea v-model.lazy="contents" placeholder="contents"></textarea>
+        <hr />
+        <button>저장</button>
+      </form>
+
+      <!-- 방법 2. form에서 submit만 적용, 데이터 전송은 버튼으로 진행 -->
+      <form action="" @submit.prevent>
+        <input v-model.lazy="title" type="text" placeholder="title" />
+        <textarea v-model.lazy="contents" placeholder="contents"></textarea>
+        <hr />
+        <button @click="save(title, contents)">저장</button>
+      </form>
+    </div>
+  </template>
+
+  <script>
+  import { ref, watchEffect } from 'vue';
+
+  export default {
+    setup() {
+      const title = ref('');
+      const contents = ref('');
+
+      const save = (title, contents) => {
+        console.log(`저장되었습니다. title: ${title}, contents: ${contents}`);
+      };
+
+      // watchEffect == 최초로 즉시 실행.
+      watchEffect(() => {
+        // console.log(title.value);
+        // console.log(contents.value);
+        save(title.value, contents.value);
+      });
+
+      return {
+        title,
+        contents,
+        save,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- **watch vs watchEffect**
+  - `watch`와 `watchEffect` 둘 다 관련 작업(api call, push route 등)을 반응적으로 수행할 수 있게 한다.<br />하지만 주요한 차이점은 관련된 반응형 데이터를 추적하는 방식이다.
+    - `watch` :
+      - 관찰된 소스만 추적한다.
+      - 콜백 내에서 엑세스한 항목은 추적하지 않는다.
+      - 콜백은 소스가 실제 변경된 경우에만 트리거 된다.
+      - `watch` 종속성 추적을 부작용과 분리하여 콜백이 실행되어야 하는 시기를 보다 정확하게 제어할 수 있다.
+
+    - `watchEffect` :
+      - 종속성 추적과 부작용을 한 단계로 결합한다.
+      - 동기 실행 중에 엑세스되는 모드 반응 속성을 자동으로 추적한다.
+      - 이것은 더 편리하고 일반적으로 더 간결한 코드를 생성하지만 반응성 종속성을 덜 명시적으로 만든다.
