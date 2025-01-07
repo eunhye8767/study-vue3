@@ -1654,3 +1654,9 @@
       - 종속성 추적과 부작용을 한 단계로 결합한다.
       - 동기 실행 중에 엑세스되는 모드 반응 속성을 자동으로 추적한다.
       - 이것은 더 편리하고 일반적으로 더 간결한 코드를 생성하지만 반응성 종속성을 덜 명시적으로 만든다.
+
+### npm trends
+- [vuetify vs quasar vs bootstrap-vue](https://npmtrends.com/bootstrap-vue-vs-quasar-vs-quasar-framework-vs-vuetify)
+  - `vuetify` : 짐코딩 선생님 추천.
+  - 현재 vue ui 프레임워크 관련 다운로드 등 정보 확인 가능.
+  - 리액트의 mui로 이해하면 될 것 같다.
