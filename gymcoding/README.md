@@ -1660,3 +1660,97 @@
   - `vuetify` : 짐코딩 선생님 추천.
   - 현재 vue ui 프레임워크 관련 다운로드 등 정보 확인 가능.
   - 리액트의 mui로 이해하면 될 것 같다.
+
+### 컴포넌트 규칙
+- 네이밍 규칙은 식별자 이름을 짓는 방법을 말합니다. 다양한 케이스를 살펴 보겠습니다.
+  - **카멜 케이스(Camel Case)** :<br />currentTempC, anIdentifierName등은 카멜 케이스에 따라 이름을 지은 겁니다. 카멜 이란 이름은 중간중간의 대문자가 낙타의 혹처럼 보인다고 해서 붙었습니다.
+  - **스네이크 케이스(Snake Case)** : <br />current_temp_c, an_identifier_name 등은 스네이크 케이스에 따라 이름을 지은 겁니다. 스네이크 케이스는 카멜 케이스보다는 조금 덜 쓰입니다.
+  - **케밥 케이스(Kebab Case)** : <br />(예) current-temp-c, an-identifier-name
+  - **파스칼 케이스(Pascal Case)** : <br />(예) CurrentTempC, AnIdentifierName
+
+- **컴포넌트 분리 하기**
+  - `TheNav.vue`, `TheView.vue` : 컴포넌트 생성.
+  - 컴포넌트는 **전역 컴포넌트**, **지역 컴포넌트**로 나뉜다.
+    - `AppCard`를 전역 컴포넌트로 만든다.
+    ```javascript
+    // main.js
+    import 'bootstrap/dist/css/bootstrap.min.css';
+    import { createApp } from 'vue';
+    import App from './App.vue';
+    import AppCard from './components/AppCard.vue';
+
+    // createApp(App).mount('#app');
+    const app = createApp(App);
+    app.component('AppCard', AppCard);
+    app.mount('#app');
+
+    import 'bootstrap/dist/js/bootstrap';
+    ```
+
+    - `App.vue`에서 `<AppCard></AppCard>`를 그대로 사용한다.
+    ```html
+    <!-- App.vue -->
+    <template>
+      <div>
+        <TheNav />
+        <TheView />
+        <AppCard></AppCard>
+      </div>
+    </template>
+
+    <script>
+    import TheNav from './components/TheNav.vue';
+    import TheView from './components/TheView.vue';
+
+    export default {
+      components: {
+        TheNav,
+        TheView,
+      },
+      setup() {
+        return {};
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+    - `TheView.vue`에서 `<AppCard></AppCard>`를 그대로 사용한다.
+    ```html
+    <!-- TheView.vue -->
+    <template>
+      <main>
+        <div class="container py-4">
+          <div class="row g-3">
+            <div class="col col-4"><AppCard></AppCard></div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+          </div>
+        </div>
+      </main>
+    </template>
+
+    <script>
+    export default {
+      setup() {
+        return {};
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+    - **전역 컴포넌트**를 사용할 경우, 사**용하지 않아도 포함되어 있기 때문에 속도, 용량 등에 영향을 끼친다.**<br />그리고 **컴포넌트별 종속성을 확인할 수 가 없다.**<br />때문에 전 연 컴포넌트보단 지역 컴포넌트를 권장한다.
+
+- **공식홈에서 권장하는 네이밍 케이스** : <br />[PascalCase (파스칼 케이스)](https://vuejs.org/guide/components/registration.html#component-name-casing)<br />(예) AppCard
+  - [(공식) 기본 컴포넌트 이름](https://ko.vuejs.org/style-guide/rules-strongly-recommended#base-component-names)
+    - 앱별 스타일과 규칙을 적용하는 기본 컴포넌트(프레젠테이션, 덤 또는 순수 컴포넌트라고도 함)는 모두 `Base`, `App` 또는 `V`와 같은 특정 접두사로 시작해야 합니다.
+    - `BaseButton.vue` / `AppButton.vue` / `VButton.vue`
+  - **싱글 인스턴스 컴포넌트 이름**
+    - 하나의 활성 인스턴스만을 갖는 컴포넌트는 오직 하나의 인스턴스만 있을 수 있음을 표시하도록 `The` 접두사로 시작해야 한다.
+    - (예 - 레이아웃) `TheHeading.vue`, `TheSidebar.vue`
