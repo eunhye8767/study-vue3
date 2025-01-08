@@ -1754,3 +1754,89 @@
   - **싱글 인스턴스 컴포넌트 이름**
     - 하나의 활성 인스턴스만을 갖는 컴포넌트는 오직 하나의 인스턴스만 있을 수 있음을 표시하도록 `The` 접두사로 시작해야 한다.
     - (예 - 레이아웃) `TheHeading.vue`, `TheSidebar.vue`
+
+### Single File Component
+- `<script>` 와 `<script setup>` : 하나의 파일에 각각 최대 1개로 서로 공존할 수 있다.
+- `<style>`에서 `scoped`을 적용할 경우, 현재 컴포넌트에서만 사용이 가능하다.<br />`<style scioed>`
+- **css 모듈**
+  - `:class=$style.??` => `module`에 따로 이름을 적용하지 않았을 경우, `$style.클래스명`으로 적용할 수 있다.<br />`:class="$style.red"`
+  ```html
+  <template>
+    <p :class="$style.red">style module</p>
+  </template>
+
+  <script>
+  export default {
+    setup() {
+      return {};
+    },
+  };
+  </script>
+
+  <style module>
+  .red {
+    color: red;
+  }
+  </style>
+  ```
+  
+  - `module`에 이름을 `classes`로 지정하게 되면<br />`:class="$classes.red"`
+  ```html
+  <template>
+    <p :class="$style.red">style module</p>
+  </template>
+
+  <script>
+  export default {
+    setup() {
+      return {};
+    },
+  };
+  </script>
+
+  <style module="classes">
+  .red {
+    color: red;
+  }
+  </style>
+  ```
+
+  - css를 script에서도 사용할 수 있다.<br />`useCssModule`를 불러와서 사용하면 된다.
+  ```html
+  <script>
+  import { useCssModule } from 'vue';
+
+  export default {
+    setup() {
+      const style = useCssModule();
+      console.log('style', style);
+      return {};
+    },
+  };
+  </script>
+  ```
+
+- **v-bind() in CSS**
+  ```html
+  <template>
+    <p class="red">style module</p>
+  </template>
+
+  <script>
+  import { ref } from 'vue';
+
+  export default {
+    setup() {
+      const color = ref('red');
+      color.value = 'green';
+      return { color };
+    },
+  };
+  </script>
+
+  <style>
+  .red {
+    color: v-bind(color);
+  }
+  </style>
+  ```

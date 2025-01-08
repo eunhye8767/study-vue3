@@ -3,9 +3,12 @@
 		<TheNav />
 		<TheView />
 	</div>
+	<!-- <p :class="$style.red">style module</p> -->
+	<p class="red">style module</p>
 </template>
 
 <script>
+import { ref, useCssModule } from 'vue';
 import TheNav from './components/TheNav.vue';
 import TheView from './components/TheView.vue';
 
@@ -15,9 +18,18 @@ export default {
 		TheView,
 	},
 	setup() {
-		return {};
+		// const style = useCssModule();
+		// console.log('style', style);
+		const color = ref('red');
+		color.value = 'purple';
+		return { color };
 	},
 };
 </script>
 
-<style lang="scss" scoped></style>
+<!-- <style lang="scss" scoped></style> -->
+<style>
+.red {
+	color: v-bind(color);
+}
+</style>
