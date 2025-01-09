@@ -3,8 +3,6 @@
 		<TheNav />
 		<TheView />
 	</div>
-	<!-- <p :class="$style.red">style module</p> -->
-	<p class="red">style module</p>
 </template>
 
 <script>
