@@ -1857,3 +1857,217 @@
 - **vue 단방향 데이터 흐름**
   - 부모 컴포넌트 > 자식 컴포넌트
   - 자식 컴포넌트 > 부모 컴포넌트, 이렇게 데이터를 흐르게 할 수 없어서 이 때, `emit`을 사용한다.
+
+### Events
+- [공식문서, vue 3 이벤트 핸들링](https://ko.vuejs.org/guide/essentials/event-handling)
+- **방법 1. `$emit`을 사용**
+  - 부모 컴포넌트
+  ```html
+  <!-- TheView.vue -->
+  <template>
+    <main>
+      <div class="container py-4">
+        <PostCreate @create-post="createPost" />
+        <div class="row g-3">
+          <div v-for="post in posts" class="col col-4" :key="post.id">
+            <AppCard
+              :title="post.title"
+              :contents="post.contents"
+              :type="post.type"
+              :is-like="post.isLike"
+              @toggle-like="post.isLike = !post.isLike"
+            ></AppCard>
+          </div>
+        </div>
+      </div>
+    </main>
+  </template>
+
+  <script>
+  import AppCard from '@/components/AppCard.vue';
+  import PostCreate from '@/components/PostCreate.vue';
+
+  import { reactive } from 'vue';
+
+  export default {
+    components: {
+      AppCard,
+      PostCreate,
+    },
+    setup() {
+      const posts = reactive([
+        { id: 1, title: '제목1', contents: '내용1', isLike: true, type: 'news' },
+        { id: 2, title: '제목2', contents: '내용2', isLike: true, type: 'news' },
+        { id: 3, title: '제목3', contents: '내용3', isLike: true, type: 'news' },
+        {
+          id: 4,
+          title: '제목4',
+          contents: '내용4',
+          isLike: false,
+          type: 'notice',
+        },
+        {
+          id: 5,
+          title: '제목5',
+          contents: '내용5',
+          isLike: false,
+          type: 'notice',
+        },
+      ]);
+
+      const createPost = () => {
+        console.log('createPost');
+      };
+
+      return {
+        posts,
+        createPost,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - 자식 컴포넌트
+  ```html
+  <!-- PostCreate.vue -->
+  <template>
+    <div>
+      <button class="btn btn-primary" @click="$emit('createPost')">Button</button>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    setup() {
+      return {};
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- **방법 2. setup(props, context)에서 context.emit 사용**
+  - 부모 컴포넌트
+  ```html
+  <!-- TheView.vue -->
+  <template>
+    <main>
+      <div class="container py-4">
+        <PostCreate @create-post="createPost" />
+        <div class="row g-3">
+          <div v-for="post in posts" class="col col-4" :key="post.id">
+            <AppCard
+              :title="post.title"
+              :contents="post.contents"
+              :type="post.type"
+              :is-like="post.isLike"
+              @toggle-like="post.isLike = !post.isLike"
+            ></AppCard>
+          </div>
+        </div>
+      </div>
+    </main>
+  </template>
+
+  <script>
+  import AppCard from '@/components/AppCard.vue';
+  import PostCreate from '@/components/PostCreate.vue';
+
+  import { reactive } from 'vue';
+
+  export default {
+    components: {
+      AppCard,
+      PostCreate,
+    },
+    setup() {
+      const posts = reactive([
+        { id: 1, title: '제목1', contents: '내용1', isLike: true, type: 'news' },
+        { id: 2, title: '제목2', contents: '내용2', isLike: true, type: 'news' },
+        { id: 3, title: '제목3', contents: '내용3', isLike: true, type: 'news' },
+        {
+          id: 4,
+          title: '제목4',
+          contents: '내용4',
+          isLike: false,
+          type: 'notice',
+        },
+        {
+          id: 5,
+          title: '제목5',
+          contents: '내용5',
+          isLike: false,
+          type: 'notice',
+        },
+      ]);
+
+      const createPost = (a, b, c, d) => {
+        console.log('createPost', a, b, c, d);
+      };
+
+      return {
+        posts,
+        createPost,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - 자식 컴포넌트
+  ```html
+  <!-- PostCreate.vue -->
+  <template>
+    <div>
+      <button class="btn btn-primary" @click="createPost">Button</button>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    emits: ['createPost'],
+    // 코드를 좀 더 줄이고 싶다면, context 를 {emit}로 변경.
+    // setup(props, context) {
+    setup(props, { emit }) {
+      const createPost = () => {
+        // context.emit('createPost', 1, 2, 3, '김길동');
+        emit('createPost', 1, 2, 3, '김길동');
+      };
+      return { createPost };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+- **객체문법 선언 - `emits`**
+  - 객체문법으로 선언할 경우, `validation` 로직을 추가할 수 있다.<br/>`validation`이 없다면 `null`로 설정하면 된다.
+  - **필수 시항은 아니지만, 공식문서 상에선 문서화를 위해 `emits`를 작성해주는 걸 권장한다.**
+  ```javascript
+  export default {
+    emits: {
+      // 유효성 검사가 없는 이벤트 선언
+      someEvent: null,
+
+      // 유효성 검사가 있는 이벤트 선언
+      someSubmit: (result) => {
+        if (emil && password) {
+          reture true
+        } else {
+          console.warn('result 값이 비었습니다!')
+          return false
+        }
+      }
+    },
+    setup(props, context) {
+      context.emit('someEvent', 'Hello World!')
+    }
+  }
+  ```
