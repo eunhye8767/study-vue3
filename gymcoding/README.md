@@ -1,5 +1,6 @@
 ## Vue3 완벽 마스터: 기초부터 실전까지 - "기본편"
 - [Vue3 완벽 마스터: 기초부터 실전까지 - "기본편"](https://www.inflearn.com/course/vue-%EC%99%84%EB%B2%BD-%EA%B8%B0%EB%B3%B8/dashboard)
+- [수업 교안](https://gymcoding.notion.site/Vue-js-3-cd9bb8ec6fec4ba9b388c808caf61880)
 
 ### VSCode 확장 프로그램 설치
 - [indent-rainbox](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)
@@ -2070,4 +2071,265 @@
       context.emit('someEvent', 'Hello World!')
     }
   }
+  ```
+
+- **v-model 만들기**
+  - 컴포넌트를 만든 후 해당 컴포넌트에 `v-model`을 적용하려면 `@update:modelValue` 이벤트를 사용하여 `v-model`을 만들 수 있습니다.
+  - 일반적으로 기본 HTML 요소인 `<input>` 태그에 `v-model` 은 아래와 같이 사용합니다.
+    ```html
+    <input v-model="username" />
+    ```
+
+  - 위에 선언된 v-model은 아래와 같이 동작합니다.
+    ```html
+    <input
+      :value="username"
+      @input="username = $event.target.value"
+    />
+    ```
+
+  - 위에 기본 동작 대신 우리가 만든 컴포넌트는 아래와 같이 수행합니다.
+    ```html
+    <LabelInput
+      :modelValue="username"
+      @update:modelValue="newValue => username = newValue"
+    />
+    ```
+
+  - 이 `<LabelInput>`을 실제로 동작하게 하려면 아래와 같이 컴포넌트를 정의해야 합니다.
+    - `modelValue` `props`를 `:value` 속성에 바인딩
+    - `@input` 이벤트에서 새 `@update:modelValue` 이벤트로 내보냅니다.
+    ```html
+    <template>
+      <label>
+        {{ label }}
+        <input
+          type="text"
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+        />
+      </label>
+    </template>
+    <script>
+    export default {
+      props: ['modelValue', 'label'],
+      emits: ['update:modelValue'],
+    };
+    </script>
+    ```
+
+  - 그리고 아래와 같이 우리가 만든 컴포넌트에 v-model을 적용할 수 있습니다.
+    ```html
+    <LabelInput label="이름" v-model="username" />
+    ```
+
+- **Computed 이용하기**
+  - 컴포넌트 안에서 computed를 사용하여 v-model을 구현할 수 있습니다.
+  ```html
+  <template>
+    <label>
+      {{ label }}
+      <input type="text" v-model="value" />
+    </label>
+  </template>
+  <script>
+  import { computed } from 'vue';
+
+  export default {
+    props: ['modelValue', 'label'],
+    emits: ['update:modelValue'],
+    setup(props, context) {
+      const value = computed({
+        get() {
+          return props.modelValue;
+        },
+        set(value) {
+          context.emit('update:modelValue', value);
+        },
+      });
+      return {
+        value,
+      };
+    },
+  };
+  </script>
+  ```
+
+  - 전달할 수 있습니다. 이럴때  `Emit`을 사용할 수 있습니다.
+  - `<BlogPost>` 컴포넌트를 개발할 때 부모에게 다시 무엇을 전달해야 할 때가 있습니다. <br />예를 들어 블로그 게시글 폰트 크기를 확대하는 기능이 있다고 가정해 보겠습니다.
+  ```javascript
+  const postFontSize = ref(1);
+  ```
+  ```html
+  <div :style="{ fontSize: postFontSize + 'em' }">
+    <BlogPost
+      v-for="post in posts"
+      :key="post.id"
+      :title="post.title"
+    />
+  </div>
+  ```
+
+  - 이제 <BlogPost>컴포넌트에서 폰트 크기를 확대할 수 있는 버튼을 추가해 보겠습니다.
+  ```html
+  <template>
+    <article>
+      <h4>{{ title }}</h4>
+      <button @click="$emit('enlarge-text')">크게</button>
+    </article>
+  </template>
+
+  <script>
+  import { toRefs } from 'vue';
+
+  export default {
+    props: ['title'],
+    emits: ['enlarge-text'],
+    setup(props) {
+      const { title } = toRefs(props);
+      return {
+        title,
+      };
+    },
+  };
+  </script>
+
+  <style></style>
+  ```
+
+  - 자식 컴포넌트에서는 emits옵션을 사용하여 이벤트를 선언할 수 있습니다. 그리고 $emit 내장 메서드를 호출하여 이벤트를 발생시킬 수 있습니다. 
+  ```html
+  <div :style="{ fontSize: postFontSize + 'em' }">
+    <BlogPost
+      v-for="post in posts"
+      :key="post.id"
+      :title="post.title"
+      @enlarge-text="postFontSize += 0.1"
+    />
+  </div>
+  ```
+
+  - 부모 컴포넌트에서는 v-on(@) 디렉티브를 사용하여 자식 컴포넌트로부터 전달받은 이벤트를 수신할 수 있습니다.<br />@enlarge-text로 이벤트를 받아 postFontSize 값을 업데이트 했습니다.
+
+- **v-model 전달인자**
+  - 기본적으로 v-model은 컴포넌트에서 modelValue props와 update:modelValue 이벤트로 사용합니다.<br />하지만 전달인자(Arguments)를 사용하여 이러한 이름을 수정할 수 있습니다.
+  ```html
+  <BookComponent v-model:title="bookTitle" />
+  ```
+
+  - 이 경우 자식 컴포넌트에서는 :title을 속성으로 정의하고 update:title로 이벤트를 내보내야 합니다.
+  ```html
+  <template>
+    <article>
+      <strong>책 이름</strong> :
+      <input
+        type="text"
+        :value="title"
+        @input="$emit('update:title', $event.target.value)"
+      />
+    </article>
+  </template>
+  <script>
+  export default {
+    props: ['title'],
+    emits: ['update:title'],
+  };
+  </script>
+  ```
+
+- **### 다중 `v-model` 바인딩**
+  - `v-model` `전달인자`를 사용하여 컴포넌트에 여러 `v-model`을 바인딩할 수 있습니다.
+  ```html
+  <BookComponent
+    v-model:title="bookTitle"
+    v-model:author="bookAuthor"
+  />
+  ```
+
+  ```html
+  <template>
+    <article>
+      <strong>도서명</strong> :
+      <input
+        type="text"
+        :value="title"
+        @input="$emit('update:title', $event.target.value)"
+      />
+      <br />
+      <strong>저자</strong> :
+      <input
+        type="text"
+        :value="author"
+        @input="$emit('update:author', $event.target.value)"
+      />
+    </article>
+  </template>
+  <script>
+  export default {
+    props: ['title', 'author'],
+    emits: ['update:title', 'update:author'],
+  };
+  </script>
+  ```
+
+- **v-model 수식어(Modifiers) 핸들링**
+  - 필요에 따라 v-model 수식어를 추가할 수 있습니다. 
+  - 예를 들어 첫 글자를 대문자로 표시하는 capitalize 라는 수식어를 만들어 보도록 하겠습니다.
+  ```html
+  <CustomInput v-model.capitalize="username"></CustomInput>
+  ```
+
+  - 컴포넌트에 추가된 수식어는 modelModifiers prop을 통해 컴포넌트에 전달됩니다. 
+  - 아래 예제에서는 기본값을 빈 객체를 갖는 modelModifiers props를 갖는 컴포넌트 입니다.
+  ```html
+  <template>
+    <input
+      type="text"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
+    />
+  </template>
+  <script>
+  export default {
+    props: {
+      modelValue: String,
+      modelModifiers: { default: () => ({}) },
+    },
+    emits: ['update:modelValue'],
+    setup(props, context) {
+      // {capitalize: true} 출력
+      console.log(props.modelModifiers);
+    },
+  };
+  </script>
+  ```
+  
+  - 컴포넌트의 `modelModifiers` prop에 `capitalize`가 포함되어 있고 이 값은 `true`로 출력되는 것을 확인할 수 있습니다. 
+  - 왜냐하면 부포 컴포넌트에서 `v-model.capitalize`를 사용했기 때문입니다.
+  - 이제 이벤트를 내보내기 전에 문자열 첫 글자를 대문자로 만들면됩니다.
+  ```html
+  <template>
+    <input type="text" :value="modelValue" @input="emitValue" />
+  </template>
+  <script>
+  export default {
+    props: {
+      modelValue: String,
+      modelModifiers: { default: () => ({}) },
+    },
+    emits: ['update:modelValue'],
+    setup(props, { emit }) {
+      const emitValue = (e) => {
+        let value = e.target.value;
+        if (props.modelModifiers.capitalize) {
+          value = value.charAt(0).toUpperCase() + value.slice(1);
+        }
+        emit('update:modelValue', value);
+      };
+      return {
+        emitValue,
+      };
+    },
+  };
+  </script>
   ```
