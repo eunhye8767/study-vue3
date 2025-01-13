@@ -2051,6 +2051,7 @@
 - **객체문법 선언 - `emits`**
   - 객체문법으로 선언할 경우, `validation` 로직을 추가할 수 있다.<br/>`validation`이 없다면 `null`로 설정하면 된다.
   - **필수 시항은 아니지만, 공식문서 상에선 문서화를 위해 `emits`를 작성해주는 걸 권장한다.**
+  - **그 이유는 `non-prop` 속성에 적용이 되기 때문에 필수로 적어주는 것을 권장한다.**
   ```javascript
   export default {
     emits: {
@@ -2237,7 +2238,7 @@
   </script>
   ```
 
-- **### 다중 `v-model` 바인딩**
+- **다중 `v-model` 바인딩**
   - `v-model` `전달인자`를 사용하여 컴포넌트에 여러 `v-model`을 바인딩할 수 있습니다.
   ```html
   <BookComponent
@@ -2333,3 +2334,126 @@
   };
   </script>
   ```
+
+### Non-Prop 속성 (fallthrough 속성)
+- Non-Prop 속성은 props 또는 event 에 명시적으로 선언되지 않은 속성 또는 이벤트 입니다.<br />예를 들어 class, style, id와 같은 것들이 있습니다.
+
+- **속성 상속**
+  - 컴포넌트가 단일 루트 요소로 구성되어 있으면 Non-Prop 속성은 루트 요소의 속성에 자동으로 추가됩니다. 예를 들어 `<MyButton>` 이라는 컴포넌트가 있다고 가정해보겠습니다.
+    ```html
+    <!-- template of <MyButton> -->
+    <button>click me</button>
+    ```
+
+  - 그리고 이 컴포넌트를 사용하는 부모 컴포넌트는 다음과 같습니다.
+    ```html
+    <MyButton class="large" />
+    ```
+
+  - 최종 렌더링된 DOM은 다음과 같습니다.
+    ```html
+    <button class="large">click me</button>
+    ```
+
+- **`v-on` 이벤트 리스너 상속**
+  - v-on 이벤트 리스너도 동일하게 상속됩니다.
+    ```html
+    <MyButton @click="onClick" />
+    ```
+  
+  - `@click` 리스너는 `<MyButton>`의 컴포넌트 루트요소인 `<button>`요소에 추가됩니다.
+  - 만약 `<button>`요소에 이미 바인딩된 이벤트가 있다면 이벤트가 추가되어 두 리스너 모두 트리거 됩니다.
+
+- **속성 상속 비활성화**
+  - `inheritAttrs: false` : 상속 해제
+  - 상위 요소에 없음. <br />![inheritAttrs: false 상위 해제](./imgs/250113-1.png)
+  ```html
+  <!-- 자식 컴포넌트 -->
+  <template>
+    <div class="p-3 bg-danger">
+      <button type="button" class="btn btn-primary">MyButton</button>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    inheritAttrs: false, // 상속 해제
+    setup() {
+      return {};
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+  
+  ```html
+  <!-- 부모 컴포넌트 -->
+  <template>
+    <main>
+      <div class="container py-4">
+        <MyButton class="my-button" id="my-button" @click="sayHello" />
+      </div>
+    </main>
+  </template>
+
+  <script>
+  import MyButton from '@/components/MyButton.vue';
+
+  export default {
+    components: {
+      MyButton,
+    },
+    setup() {
+      const sayHello = () => {
+        alert('안녕하세요');
+      };
+      return { sayHello };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - `id`, `class`, `onClick` 등을 버튼 요소에 적용 시키고 싶을 때<br />**`context.aattrs`를 이용하면 된다.**
+    - `v-bind` 단축 속성으론 `:="$attrs"`
+    - `$attrs` 객체에는 컴포넌트에 선언되지 않은 모든 속성 `props`, `emits` (예: `class`, `style`, `v-on` 등)을 포함하고 있습니다.
+    - **몇 가지 참고 사항:**
+      - `props`와 달리 **Non-Prop 속성**은 JavaScript에서 원래 대소문자를 유지하므로 `foo-bar`와 같은 속성은 `$attrs[’foo-bar’]`로 접근해야 합니다.
+      - `@click`과 같은 `v-on`리스너는 `$attrs.onClick`과 같이 함수로 접근할 수 있습니다.
+    ```html
+    <template>
+      <div class="p-3 bg-danger">
+        <button type="button" class="btn btn-primary" v-bind="$attrs">
+          MyButton
+        </button>
+      </div>
+    </template>
+
+    <script>
+    export default {
+      inheritAttrs: false,
+      setup(props, context) {
+        console.log('class', context.attrs.class);
+        console.log('id', context.attrs.id);
+        console.log('onClick', context.attrs.onClick);
+
+        return {};
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - `data-id` 처럼 특정 값을 적용했을 때, **다중 루트**일 경우 `$attrs`로 표시를 해주어야 한다.
+    ```html
+    <!-- 부모 컴포넌트 -->
+    <LabelInput label="이름" data-id="id 입니다." />
+    ```
+    
+    ```html
+    <!-- 자식 컴포넌트 -->
+    <input v-model="value" type="text" class="form-control" v-bind="$attrs" />
+    ```
