@@ -2051,7 +2051,7 @@
 - **객체문법 선언 - `emits`**
   - 객체문법으로 선언할 경우, `validation` 로직을 추가할 수 있다.<br/>`validation`이 없다면 `null`로 설정하면 된다.
   - **필수 시항은 아니지만, 공식문서 상에선 문서화를 위해 `emits`를 작성해주는 걸 권장한다.**
-  - **그 이유는 `non-prop` 속성에 적용이 되기 때문에 필수로 적어주는 것을 권장한다.**
+  - **그 이유는 `non-prop` 속성에서 알려진 리스너를 재외할 수 있다.**
   ```javascript
   export default {
     emits: {
@@ -2457,3 +2457,35 @@
     <!-- 자식 컴포넌트 -->
     <input v-model="value" type="text" class="form-control" v-bind="$attrs" />
     ```
+
+- **`emit` 작성 시, 유효화 검사가 있든 없든 이벤트 선언 정의를 하는 것이 좋다.**
+  - **선언을 안 했을 경우, 의도치 않은 일이 발생할 수 있다.**<br />![emits를 써야 하는 이유](./imgs/250113-2.png)
+  ```html
+  <!-- 부모 컴포넌트 -->
+  <MyButton class="my-button" id="my-button" @click="sayHello" />
+  ```
+  ```html
+  <!-- 자식 컴포넌트 -->
+  <template>
+    <div class="p-3 bg-danger">
+      <button type="button" class="btn btn-primary" @click="sayHello">
+        MyButton
+      </button>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    emits: ['click'],
+    setup(props, { emit }) {
+      const sayHello = () => {
+        emit('click');
+      };
+
+      return { sayHello };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
