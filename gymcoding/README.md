@@ -2489,3 +2489,212 @@
 
   <style lang="scss" scoped></style>
   ```
+
+### Slots
+- [교재 - Slots](https://gymcoding.notion.site/Slots-f72f67bf01b449e79358e12cc3a2beee)
+- HTML 요소와 마찬가지로 우리가 만든 컴포넌트에 콘텐츠를 전달할 수 있으면 유용합니다.<br />`<FancyButton>` 컴포넌트를 만든 후 콘텐츠를 전달해 보도록 하겠습니다.
+  ```html
+  <!-- FancyButton.vue -->
+  <template>
+    <button class="fancy-btn">
+      <slot></slot>
+    </button>
+  </template>
+  ```
+  ```html
+  <FancyButton>
+    <!-- 슬롯 콘텐츠 -->
+    Click!!
+  </FancyButton>
+  ```
+  ![slot 이미지 설명](./imgs/250114-1.png)
+
+  - default slot을 넣을 수도 있다.
+  ```html
+   <!-- FancyButton.vue -->
+  <template>
+    <buntton class="fancy-btn">
+      <slot>Default Click!</slot>
+    </buntton>
+  </template>
+  ``` 
+  ```html
+  <FancyButton></FancyButton>
+  ```
+  ![default로 보여줄 수 있다](./imgs/250114-2.png)
+
+- **Named Slots**
+  ```html
+  <!-- BaseCard.vue -->
+  <template>
+    <article>
+      <div>
+        <slot name="header"></slot>
+      </div>
+      <div>
+        <slot></slot>
+      </div>
+      <div">
+        <slot name="footer"></slot>
+      </div>
+    </article>
+  </template>
+  ```
+
+  - `<slot>`에 `name`속성을 부여하여 특정 슬롯 콘텐츠가 렌더링 되어야 할 위치를 설정할 수 있습니다.
+  - `name`이 없는 `<slot>`의 이름은 암시적으로 `default`입니다.
+  ```html
+  <!-- 부모 컴포넌트 사용 예시 -->
+  <template>
+    <BaseCard>
+      <template v-slot:header>제목</template>
+      <template v-slot:default>안녕하세요</template>
+      <template v-slot:footer>푸터</template>
+    </BaseCard>
+  </template>
+  ```
+  
+  - 위 예시처럼 name이 부여된 <slot>에 콘텐츠를 전달하려면 v-slot 디렉티브를 사용하여 전달할 수 있습니다.<br>그리고 v-slot:전달인자를 사용하여 지정한 슬롯 콘텐츠에 전달할 수 있습니다.
+  - `v-slot`은 `#`으로 단축 표현할 수 있습니다.
+  ```html
+  <!-- 부모 컴포넌트 사용 예시 -->
+  <template>
+    <BaseCard>
+      <template #header>제목</template>
+      <template #default>안녕하세요</template>
+      <template #footer>푸터</template>
+    </BaseCard>
+  </template>
+
+  <!-- 그리고 default 슬롯은 암시적으로 처리할 수 있습니다. -->
+  <!-- 부모 컴포넌트 사용 예시 -->
+  <template>
+    <BaseCard>
+      <template #header>제목</template>
+      <!-- 암시적으로 default slot -->
+      안녕하세요
+      <template #footer>푸터</template>
+    </BaseCard>
+  </template>
+  ```
+
+  - **동적으로 `solt name` 변경하기**
+  - `slotArgs` 현재 값은 `header`.
+  ```html
+  <template>
+    <main>
+      <div class="container py-4">
+        <AppCard>
+          <template #[slotArgs]>제목입니다</template>
+        </AppCard>
+      </div>
+    </main>
+  </template>
+
+  <script>
+  import AppCard from '@/components/AppCard.vue';
+
+  import { ref } from 'vue';
+
+  export default {
+    components: {
+      AppCard,
+    },
+    setup() {
+      const slotArgs = ref('header');
+      return { slotArgs };
+    },
+  };
+  </script>
+
+  <style scoped></style>
+  ```
+
+  - `FancyButton`에도 사용해보자
+  ```html
+  <!-- FancyButton.vue -->
+  <template>
+    <buntton class="fancy-btn">
+      <slot fancy-msg="fancyMsg">Default Click!</slot>
+    </buntton>
+  </template>
+  ```
+  ```html
+  <FancyButton v-slot="{ fancyMsg }">{{ fancyMsg }}</FancyButton>
+
+  <!-- 또는  template을 활용할 수 있다.-->
+  <FancyButton>
+    <template v-slot="{ fancyMsg }">{{ fancyMsg }}</template>
+  </FancyButton>
+  ```
+
+  - **`AppCard` 컴포넌트에서 `header`, `default`를 사용하고 싶지 않을 때**
+    - `v-if="$slots.header"`처럼 `v-if`를 활용하여 조건을 적용하면 된다.
+    ```html
+    <!-- AppCard.vue -->
+    <div class="card">
+      <!-- header를 사용하기 싫을 때 -->
+      <div v-if="$slots.header" class="card-header">
+        <slot name="header" header-messag="헤더 메시지">#header</slot>
+      </div>
+      <div v-if="$slots.default" class="card-body">
+        <slot :child-messag="childMessag" :hello-messag="helloMessag">#body</slot>
+      </div>
+      <div v-if="$slots.footer" class="card-footer text-body-secondary">
+        <slot name="footer" footer-messag="푸터 메시지">#footer</slot>
+      </div>
+    </div>
+    ```
+    ```html
+    <!-- TheView.vue -->
+    <AppCard>
+      <template #default="{ childMessag, helloMessag }">
+        <!-- {{ slotProps.childMessag }} -->
+        {{ childMessag }}
+        <br />
+        {{ helloMessag }}
+      </template>
+    </AppCard>
+    ```
+
+    - `v-if="$slots.footer`가 아닌 `computed` 함수를 이용해서 할 수 도 있다.
+    ```html
+    <!-- AppCard.vue -->
+    <template>
+      <div class="card">
+        <div v-if="$slots.header" class="card-header">
+          <slot name="header" header-messag="헤더 메시지">#header</slot>
+        </div>
+        <div v-if="$slots.default" class="card-body">
+          <slot :child-messag="childMessag" :hello-messag="helloMessag">#body</slot>
+        </div>
+        <div v-if="hasFooter" class="card-footer text-body-secondary">
+          <slot name="footer" footer-messag="푸터 메시지">#footer</slot>
+        </div>
+      </div>
+    </template>
+
+    <script>
+    import { ref, computed } from 'vue';
+    export default {
+      setup(props, { slots }) {
+        const childMessag = ref('자식 컴포넌트 입니다');
+        const helloMessag = ref('헬로우 메세지');
+
+        // context.slots
+        const hasFooter = computed(() => !!slots.footer);
+        return {
+          childMessag,
+          helloMessag,
+          hasFooter,
+        };
+      },
+    };
+    </script>
+
+    <style scoped></style>
+    ```
+
+- [공식문서, 컴포넌트 인스턴스](https://ko.vuejs.org/api/component-instance)
+- **활용법은 틈틈히 공부해두기!!**
+

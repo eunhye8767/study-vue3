@@ -1,57 +1,38 @@
 <template>
 	<div class="card">
-		<div class="card-body">
-			<!-- type: news, notice -->
-			<span class="badge bg-secondary">{{ typeName }}</span>
-			<h5 class="card-title mt-2">{{ title }}</h5>
-			<p class="card-text">{{ contents }}</p>
-			<a href="#" class="btn" :class="isLikeClass" @click="toggleLike"
-				>좋아요</a
-			>
+		<!-- <div class="card-header">
+			<slot name="header" header-messag="헤더 메시지">#header</slot>
+		</div> -->
+
+		<!-- header를 사용하기 싫을 때 -->
+		<div v-if="$slots.header" class="card-header">
+			<slot name="header" header-messag="헤더 메시지">#header</slot>
+		</div>
+		<div v-if="$slots.default" class="card-body">
+			<slot :child-messag="childMessag" :hello-messag="helloMessag">#body</slot>
+		</div>
+		<div v-if="hasFooter" class="card-footer text-body-secondary">
+			<slot name="footer" footer-messag="푸터 메시지">#footer</slot>
 		</div>
 	</div>
 </template>
 
 <script>
-import { computed } from 'vue';
-
+import { ref, computed } from 'vue';
 export default {
-	props: {
-		type: {
-			type: String,
-			// 속성 값이 비어있거나 undefined일 경우, 기본값을 적용해준다.
-			default: 'news',
-			validator: value => ['news', 'notice'].includes(value),
-		},
-		title: {
-			type: String,
-			required: true, // 필수
-		},
-		contents: {
-			type: String,
-			// required: true,
-		},
-		isLike: {
-			type: Boolean,
-		},
-		obj: {
-			type: Object,
-			default: () => {},
-		},
-	},
-	emits: ['toggleLike'],
-	setup(props, context) {
-		// console.log(props.title);
-		const isLikeClass = computed(() =>
-			props.isLike ? 'btn-danger' : 'btn-outline-danger',
-		);
-		const typeName = computed(() =>
-			props.type === 'news' ? '뉴스' : '공지사항',
-		);
-		const toggleLike = () => context.emit('toggleLike');
-		return { isLikeClass, typeName, toggleLike };
+	setup(props, { slots }) {
+		const childMessag = ref('자식 컴포넌트 입니다');
+		const helloMessag = ref('헬로우 메세지');
+
+		// context.slots
+		const hasFooter = computed(() => !!slots.footer);
+		return {
+			childMessag,
+			helloMessag,
+			hasFooter,
+		};
 	},
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>
