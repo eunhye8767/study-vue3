@@ -2698,3 +2698,141 @@
 - [공식문서, 컴포넌트 인스턴스](https://ko.vuejs.org/api/component-instance)
 - **활용법은 틈틈히 공부해두기!!**
 
+### Provide / Inject
+- [교재, Provide / Inject](https://gymcoding.notion.site/Provide-Inject-f8b7ef5d71124139ab59b376711163b2)
+- **Prop Drilling**
+  - 일반적을 부모 컴포넌트에서 자식 컴포넌트로 데이터를 전달해야 할 때 props를 사용합니다. <br />하지만 규모가 큰 컴포넌트 트리가 있고 깊이 중첩된 자손 컴포넌트에 데이터를 전달해야 한다면<br />해당 자손 컴포넌트와 연관된 모든 자식 컨포넌트에게 동일한 prop을 전달해야 합니다.<br />
+    ![prop drilling](./imgs/250115-1.png)
+  - `<Root>`에서 `<DeepChild>` 컴포넌트에 데이터를 전달하기 위해서는<br />`<Footer>` 컴포넌트를 거쳐 데이터를 전달해야 합니다. 만약 더 긴 상위 체인이 있으면 더 많은 상위 컴포넌트들이 영향을 받습니다.<br />**이것을 “Prop Drilling”이라고 합니다.**<br />
+  - `“Prop Drilling”` 문제는 Vue3의 `provide`와 `inject`로 해결할 수 있습니다.<br />`provide`와 `inject`를 사용하면 데이터를 제공하는 상위 컴포넌트는 **dependency provider** 역할을 합니다.<br />그리고 데이터를 받는 하위 컴포넌트는 깊이에 관계 없이 **dependency provider**가 제공하는 종속성(data, function 등)을 주입받을 수 있습니다.<br />
+    ![prop drilling](./imgs/250115-1.png)
+
+- **Provide와 Inject**
+  - `provide` 컴포넌트
+    - 예시로 `provide('static-message', staticMessage);` 를 사용하여 `provide`를 설정한다.
+    ```html
+    <!-- ProvideInject.vue -->
+    <template>
+      <div class="container py-4">
+        <div class="card">
+          <div class="card-header">ProvideInject Component</div>
+          <div class="card-body"><Child /></div>
+        </div>
+      </div>
+    </template>
+
+    <script>
+    import Child from '@/components/Child.vue';
+    import { provide, ref } from 'vue';
+    export default {
+      components: {
+        Child,
+      },
+      setup() {
+        const staticMessage = 'static message';
+        const message = ref('message');
+        const count = ref(10);
+
+        provide('static-message', staticMessage);
+        provide('message', message);
+        provide('count', count);
+        return {};
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - **inject** 컴포넌트
+    - 예시로 `const staticMessage = inject('static-message');`처럼, `inject`를 사용한다.
+    ```html
+    <template>
+      <div class="card">
+        <div class="card-header">Deep Child Component</div>
+        <div class="card-body">{{ staticMessage }}{{ message }} {{ count }}</div>
+      </div>
+    </template>
+
+    <script>
+    import { inject } from 'vue';
+
+    export default {
+      setup() {
+        const staticMessage = inject('static-message');
+        const message = inject('message');
+        const count = inject('count');
+
+        return {
+          staticMessage,
+          message,
+          count,
+        };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - `provide` 값을 주지 않아 값이 없거나 어떠한 이슈로 데이터가 넘어오지 않았을 경우를 대비해<br />디폴트값(default)을 적용할 수 있다.
+    ```html
+    <!-- ProvideInject.vue -->
+    setup() {
+      const staticMessage = 'static message';
+      const message = ref('message');
+      const count = ref(10);
+
+      // provide('static-message', staticMessage); 값을 넘겨주지 않음.
+      provide('message', message);
+      provide('count', count);
+      return {
+        count,
+      };
+    },
+
+    <!-- DeepChild.vue -->
+    setup() {
+		  const staticMessage = inject('static-message', 'default message');
+      ...
+    }
+    ```
+- **Reactivity**
+  - Provide/Inject를 반응성 데이터로 제공할 때 **가능한 모든 변경을 Provider 내부에서 하는 것이 좋습니다.** <br />이렇게 Provider 내부에 배치되면 향후 유지관리가 용이합니다.<br />만약에 injector 내부 컴포넌트에서 반응성 데이터를 변경해야 하는 경우 데이터 변경을 제공하는 함수를 함께 제공하는 것이 좋습니다.
+  ```javascript
+  // Provider
+  const message = ref('Hello World!');
+  const updateMessage = () => {
+    message.value = 'world!';
+  };
+  provide('message', { message, updateMessage });
+  ```
+  ```javascript
+  // Injector
+  const { message, updateMessage } = inject('message');
+  ```
+
+  - 그리고 주입된 컴포넌트에서 제공된 값을 변경할 수 없도록 하려면 `readonly()` 함수를 사용할 수 있습니다.
+  ```javascript
+  import { provide, readonly, ref } from 'vue';
+
+  provide('count', readonly(count));
+  ```
+
+- **App-level Provide**
+  - 컴포넌트에서 데이터를 제공하는 것 외에도 **App-level**에서 제공할 수도 있습니다.
+  ```javascript
+  import { createApp } from 'vue';
+  import App from './App.vue';
+
+  const app = createApp(App);
+  app.provide('appMessage', 'Hello app message');
+  app.mount('#app');
+  ```
+
+  - **Provide/Inject 사용 예**
+    - App-level에서의 Provide는 앱에서 렌더링되는 모든 컴포넌트에서 사용할 수 있습니다.<br />이것은 [Plugin](https://vuejs.org/guide/reusability/plugins.html)을 작성할 때 유용합니다.
+    - Vue2에서 컴포넌트 인스턴스 객체를 추가할 때 global property에 추가 했으나, <br />**Vue3에서 Composition API Setup 함수에서는 컴포넌트 인스턴스에 접근할 수 없다.**<br />이때 대신 Provide/Inject를 사용할 수 있다.
+    - [참고, Vue3 Config Global Properties](https://vuejs.org/api/application.html#app-config-globalproperties)
+
+
