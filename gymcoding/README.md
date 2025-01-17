@@ -2849,20 +2849,22 @@
   - 라이프사이클 훅에 접두사 `“on”`을 붙여 컴포넌트의 라이프사이클 훅에서 코드를 실행할 수 있습니다. <br />아래 표에있는 라이프사이클 훅은 `setup()` 함수 내에서 동기적으로 호출해야 합니다.
   - 다음 표에서 여러 라이프사이클 훅 단계와 `setup()` 함수 내에서 호출하는 방법을 확인할 수 있습니다.<br />
   <br />
-  
-  | **Options API** | **setup 내부에서 사용** |
-  | --- | --- |
-  | `beforeCreate` | 필요하지 않음* |
-  | `created` | 필요하지 않음* |
-  | `beforeMount` | `onBeforeMount` |
-  | `mounted` | `onMounted` |
-  | `beforeUpdate` | `onBeforeUpdate` |
-  | `updated` | `onUpdated` |
-  | `beforeUnmount` | `onBeforeUnmount` |
-  | `unmounted` | `onUnmounted` |
-  | `errorCaptured` | `onErrorCaptured` |
-  | `renderTracked` | `onRenderTracked` |
-  | `renderTriggered` | `onRenderTriggered` |
-  | [**`activated`**](https://vuejs.org/api/options-lifecycle.html#activated) | [**`onActivated`**](https://vuejs.org/api/composition-api-lifecycle.html#onactivated) |
-  | [**`deactivated`**](https://vuejs.org/api/options-lifecycle.html#deactivated) | [**`onDeactivated`**](https://vuejs.org/api/composition-api-lifecycle.html#ondeactivated) |
-  | [**`serverPrefetch`**](https://vuejs.org/api/options-lifecycle.html#serverprefetch) | [**`onServerPrefetch`**](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch) |
+
+    | **Options API** | **setup 내부에서 사용** |
+    | --- | --- |
+    | `beforeCreate` | 필요하지 않음* |
+    | `created` | 필요하지 않음* |
+    | `beforeMount` | `onBeforeMount` |
+    | `mounted` | `onMounted` |
+    | `beforeUpdate` | `onBeforeUpdate` |
+    | `updated` | `onUpdated` |
+    | `beforeUnmount` | `onBeforeUnmount` |
+    | `unmounted` | `onUnmounted` |
+    | `errorCaptured` | `onErrorCaptured` |
+    | `renderTracked` | `onRenderTracked` |
+    | `renderTriggered` | `onRenderTriggered` |
+    | [**`activated`**](https://vuejs.org/api/options-lifecycle.html#activated) | [**`onActivated`**](https://vuejs.org/api/composition-api-lifecycle.html#onactivated) |
+    | [**`deactivated`**](https://vuejs.org/api/options-lifecycle.html#deactivated) | [**`onDeactivated`**](https://vuejs.org/api/composition-api-lifecycle.html#ondeactivated) |
+    | [**`serverPrefetch`**](https://vuejs.org/api/options-lifecycle.html#serverprefetch) | [**`onServerPrefetch`**](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch) |
+
+  - 
