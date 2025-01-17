@@ -2835,4 +2835,32 @@
     - Vue2에서 컴포넌트 인스턴스 객체를 추가할 때 global property에 추가 했으나, <br />**Vue3에서 Composition API Setup 함수에서는 컴포넌트 인스턴스에 접근할 수 없다.**<br />이때 대신 Provide/Inject를 사용할 수 있다.
     - [참고, Vue3 Config Global Properties](https://vuejs.org/api/application.html#app-config-globalproperties)
 
+### Lifecycle Hooks
+- [교재, Lifecycle Hooks](https://gymcoding.notion.site/Lifecycle-hooks-64b3c1bec01744f2b8edb473506e2981)
+- 라이프사이클 훅(Lifecycle hooks)은 라이프사이클 단계에서 사용자가 자신의 코드를 추가할 수 있는 단계별 기능(function)입니다. <br />
+  ![라이프사이클 훅 이미지](./imgs/250117-1.png)
+  - `Creation(생성)` : `setup`, `beforeCreate`, `created`
+  - `Mounting(장착)` : `beforeMount`, `mounted`
+  - `Updating(변경)` : `beforeUpdate`, `updated`
+  - `Destruction(소멸)` : `beforeUnmount`, `unmounted`
 
+- **Lifecycle Hooks**
+  - 컴포넌트 라이프 사이클의 각 단계에서 실행되는 함수들을 라이프사이클 훅이라고 합니다.
+  - 라이프사이클 훅에 접두사 `“on”`을 붙여 컴포넌트의 라이프사이클 훅에서 코드를 실행할 수 있습니다. <br />아래 표에있는 라이프사이클 훅은 `setup()` 함수 내에서 동기적으로 호출해야 합니다.
+  - 다음 표에서 여러 라이프사이클 훅 단계와 `setup()` 함수 내에서 호출하는 방법을 확인할 수 있습니다.
+  | **Options API** | **setup 내부에서 사용** |
+  | --- | --- |
+  | `beforeCreate` | 필요하지 않음* |
+  | `created` | 필요하지 않음* |
+  | `beforeMount` | `onBeforeMount` |
+  | `mounted` | `onMounted` |
+  | `beforeUpdate` | `onBeforeUpdate` |
+  | `updated` | `onUpdated` |
+  | `beforeUnmount` | `onBeforeUnmount` |
+  | `unmounted` | `onUnmounted` |
+  | `errorCaptured` | `onErrorCaptured` |
+  | `renderTracked` | `onRenderTracked` |
+  | `renderTriggered` | `onRenderTriggered` |
+  | [**`activated`**](https://vuejs.org/api/options-lifecycle.html#activated) | [**`onActivated`**](https://vuejs.org/api/composition-api-lifecycle.html#onactivated) |
+  | [**`deactivated`**](https://vuejs.org/api/options-lifecycle.html#deactivated) | [**`onDeactivated`**](https://vuejs.org/api/composition-api-lifecycle.html#ondeactivated) |
+  | [**`serverPrefetch`**](https://vuejs.org/api/options-lifecycle.html#serverprefetch) | [**`onServerPrefetch`**](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch) |
