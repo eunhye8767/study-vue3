@@ -2867,4 +2867,99 @@
     | [**`deactivated`**](https://vuejs.org/api/options-lifecycle.html#deactivated) | [**`onDeactivated`**](https://vuejs.org/api/composition-api-lifecycle.html#ondeactivated) |
     | [**`serverPrefetch`**](https://vuejs.org/api/options-lifecycle.html#serverprefetch) | [**`onServerPrefetch`**](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch) |
 
-  - 
+- **라이프사이클 훅**<br />**`Creation(생성)`** → **`Mounting(장착)`** → **`Updating(수정)`** → **`Destruction(소멸)`**
+  - **Creation**
+    - 컴포넌트 초기화 단계이며 `Creation Hooks`은 라이프사이클 단계에서 가장 먼저 실행된다. 
+    - 아직 컴포넌트가 DOM에 추가되기 전이므로 DOM에 접근할 수 없다.
+    - 서버렌더링에서 지원되는 단계
+    - 클라이언트나 서버 렌더 단에서 처리해야 할 일이 있으면 이 단계에서 진행
+
+    ```javascript
+    export default {
+      beforeCreate() {
+        // 컴포넌트 인스턴스가 초기화 될 때 실행됩니다. 
+        // data() 또는 computed와 같은 다른 옵션을 처리하기 전에 즉시 호출됩니다.
+      },
+      created() {
+        // 컴포넌트 인스턴스가 초기화를 완료한 후 호출되는 훅 입니다.
+      },
+      setup() {
+        // coding...
+
+        // Composition API의 `setup()` 훅은 Options API 훅 보다 먼저 호출됩니다.
+        // `beforeCreate`와 `created` 라이프사이클 훅은 Options API에서 사용하는 라이프사이클 훅으로 
+        // Vue3 Composition API를 활용하여 개발을 진행할 때는 `setup()`함수로 대체할 수 있습니다.
+      }
+    }
+    ```
+
+  - **Mounting**
+    - DOM에 컴포넌트를 삽입하는 단계이다. `onBeforeMount`와 `onMounted`가 있다.
+    - 서버렌더링에서 지원되지 않는다
+    - 초기 렌더링 직전에 돔을 변경하고자 한다면 이 단계에서 활용할 수 있다
+
+    - **onBeforeMount**
+      - 컴포넌트가 마운트되기 직전에 호출됩니다.
+      - 대부분의 경우 사용을 권장하지 않는다
+
+    - **onMounted**
+      - 컴포넌트가 마운트된 후에 호출됩니다. DOM에 접근할 수 있습니다.
+      - 모든 자식 컴포넌트가 마운트되었음을 의미합니다.
+      - 자체 DOM 트리가 생성되어 상위 컴포넌트에 삽입되었음을 의미합니다.
+
+  - **Updating**
+    - 반응형 상태 변경으로 컴포넌트의 DOM 트리가 업데이트된 후 호출될 콜백을 등록합니다.
+    - 디버깅이나 프로파일링 등을 위해 컴포넌트 **재 렌더링** 시점을 알고 싶을 때 사용하면 된다.
+
+    - **onBeforeUpdate**
+      - 반응형 상태 변경으로 **컴포넌트의 DOM 트리를 업데이트하기 직전에 호출**될 콜백을 등록합니다.
+      - 컴포넌트에서 사용되는 반응형 상태 값이 변해서, DOM에도 그 변화를 적용시켜야 할 때가 있습니다.<br />이 때, 변화 직전에 호출되는 것이 바로 onBeforeUpdate 훅입니다.
+
+    - **onUpdated**
+      - 반응 상태 변경으로 인해 **컴포넌트가 DOM 트리를 업데이트한 후에 호출**됩니다.
+      - 상위 컴포넌트의 `onUpdated`훅은 하위 컴포넌트의 훅 이후에 호출됩니다. (`Child` → `Parent`)
+      - 이 훅은 다른 상태 변경으로 인해 발생할 수 있는 컴포넌트의 DOM 업데이트 후에 호출됩니다. <br />특정 상태 변경 후에 업데이트된 DOM에 액세스해야 하는 경우 대신 `nextTick()`을 사용하십시오.
+
+    - **WARNING**<br />: `onUpdated` 훅에서 컴포넌트 상태를 변경하지 마십시오. 그러면 무한 업데이트 루프가 발생할 수 있습니다!
+
+  - `onBeforeUpdate`에서는 초기값이 `''` 빈값이 었기 때문에 `dom contents`에서 값이 없고<br />`onUpdated`에서는 반응형 데이터 값이 변하면서 현재 데이터 값이 변하였기 때문에 아래 이미지와 같이 변한된 값을 확인할 수 있다.
+    - `onBeforeUpdate`와 `onUpdate`는 재 랜더링 시점 - 디버깅 때 확인해볼 수 있다!
+    ```html
+    <!-- LifecycleHooks.vue -->
+
+    <p id="message">{{ message }}</p>
+
+    onBeforeUpdate(() => {
+      console.log('onBeforeUpdate');
+      console.log(
+        'Dom content: ',
+        document.querySelector('#message').textContent,
+      );
+    });
+
+    onUpdated(() => {
+      console.log('onUpdated');
+      console.log(
+        'Dom content: ',
+        document.querySelector('#message').textContent,
+      );
+    });
+    ```
+    ![콘솔로그, befpreUpdate와 onUpdated 차이](./imgs/250117-2.png)
+
+  - **Destruction**
+    - 해체(소멸)단계 이며 `onBeforeUnmount`와 `onUnmounted`가 있습니다.
+
+    - **onBeforeUnmount** : 컴포넌트가 마운트 해제되기 직전에 호출됩니다.
+    - **onUnmounted** : 컴포넌트가 마운트 해제된 후 호출됩니다.
+
+    - **ETC**
+      - [**`onErrorCaptured()`**](https://vuejs.org/api/composition-api-lifecycle.html#onerrorcaptured)
+      - [**`onRenderTracked()`**](https://vuejs.org/api/composition-api-lifecycle.html#onrendertracked)
+      - [**`onRenderTriggered()`**](https://vuejs.org/api/composition-api-lifecycle.html#onrendertriggered)
+      - [**`onActivated()`**](https://vuejs.org/api/composition-api-lifecycle.html#onactivated)
+      - [**`onDeactivated()`**](https://vuejs.org/api/composition-api-lifecycle.html#ondeactivated)
+      - [**`onServerPrefetch()`**](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch)
+
+    - **Composition API Lifecycle**<br />
+    [Vue 공식 홈페이지 - Composition API: Lifecycle Hooks](https://vuejs.org/api/composition-api-lifecycle.html)
