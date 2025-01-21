@@ -2963,3 +2963,141 @@
 
     - **Composition API Lifecycle**<br />
     [Vue 공식 홈페이지 - Composition API: Lifecycle Hooks](https://vuejs.org/api/composition-api-lifecycle.html)
+
+### Template Refs
+- [교재, Template Refs](https://gymcoding.notion.site/Template-refs-e04d30f96ede460fa12850a52f542b1e)
+- 템플릿 참조 === `Template Refs`
+- 기본 DOM요소에 직접 접근해야 하는 경우가 있을 수 있습니다. 이때 ref 특수 속성을 사용해서 쉽게 접근할 수 있습니다.
+  ```html
+  <input type="text" ref="input" />
+  ```
+
+- **`v-for` 내부 참조** : `v3.2.25 이상에서 동작한다.
+  ```html
+  <!-- TemplateRefs.vue -->
+  <template>
+    <div class="container py-4">
+      <ul>
+        <!-- <li v-for="(fruit, index) in fruits" :key="index" ref="itemRefs"> -->
+        <li
+          v-for="(fruit, index) in fruits"
+          :key="index"
+          :ref="el => itemRefs.push(el.textContent)"
+        >
+          {{ fruit }}
+        </li>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+  import { onMounted, ref } from 'vue';
+
+  export default {
+    setup() {
+      onMounted(() => {
+        // itemRefs.value.forEach(item => console.log('item :', item.textContent));
+        itemRefs.value.forEach(item => console.log('item :', item));
+      });
+
+      const fruits = ref(['사과', '딸기', '포도']);
+      const itemRefs = ref([]);
+
+      return {
+        fruits,
+        itemRefs,
+      };
+    },
+  };
+  </script>
+
+  <style lang="scss" scoped></style>
+  ```
+- **컴포넌트 Refs와 `$parent`**
+  - 부모 컴포넌트
+    ```html
+    <!-- TemplateRefs.vue -->
+    <template>
+      <div class="container py-4">
+        <ul>
+          <!-- <li v-for="(fruit, index) in fruits" :key="index" ref="itemRefs"> -->
+          <li
+            v-for="(fruit, index) in fruits"
+            :key="index"
+            :ref="el => itemRefs.push(el.textContent)"
+          >
+            {{ fruit }}
+          </li>
+        </ul>
+        <hr />
+        <TemplateRefsChild ref="child" />
+      </div>
+    </template>
+
+    <script>
+    import TemplateRefsChild from './TemplateRefsChild.vue';
+    import { onMounted, ref } from 'vue';
+
+    export default {
+      components: {
+        TemplateRefsChild,
+      },
+      setup() {
+        onMounted(() => {
+          input.value.value = 'Hello World!';
+          console.log('onMounted : ', input.value);
+
+          // itemRefs.value.forEach(item => console.log('item :', item.textContent));
+          itemRefs.value.forEach(item => console.log('item :', item));
+
+          console.log('child.message :', child.value.message);
+        });
+
+        const fruits = ref(['사과', '딸기', '포도']);
+        const itemRefs = ref([]);
+
+        const child = ref(null);
+
+        return {
+          input,
+          fruits,
+          itemRefs,
+          child,
+        };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
+
+  - 자식 컴포넌트
+    ```html
+    <!-- TemplateRefsChild.vue -->
+    <template>
+      <!-- 부모 속성의 값을 나타낼 수 있다 === $parent -->
+      <div>{{ $parent }}</div>
+      <ul>
+        <li v-for="fruit in $parent.fruits" :key="fruit">{{ fruit }}</li>
+      </ul>
+    </template>
+
+    <script>
+    import { ref } from 'vue';
+
+    export default {
+      setup() {
+        const message = ref('Hello ~!');
+        const sayHello = () => {
+          alert(message.value);
+        };
+        return {
+          message,
+          sayHello,
+        };
+      },
+    };
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
