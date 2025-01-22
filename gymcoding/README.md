@@ -3101,3 +3101,146 @@
 
     <style lang="scss" scoped></style>
     ```
+
+### script setup 속성
+- [교재, script setup 속성](https://gymcoding.notion.site/script-setup-089bd27aa0304a5c9096ca2b76625455)
+- `<script setup>`은 Single-File Component 내에서 Composition API를 사용하기 위한 syntactic sugar(문법적 설탕) 입니다.
+- `<script setup>` 기본 구조
+  ```html
+  <template>
+    <div></div>
+  </template>
+
+  <script setup></script>
+
+  <style lang="scss" scoped></style>
+  ```
+
+  - `<script setup></script>`은 아래 코드와 동일하다.
+  ```html
+  <script>
+  export default {
+    setup() {
+      return {};
+    },
+  };
+  </script>
+  ```
+
+- **`defineProps()` & `defineEmits()`**
+  - `script setup`에서는 `props`와 `emits`을 불러오는 방식이 다르다.
+  - `defineProps()`와 `defineEmits()` APIs를 `<script setup>` 내에 선언하여 props와 emits을 사용할 수 있습니다.
+  ```html
+  <script setup>
+  const props = defineProps({
+    foo: String
+  })
+
+  const emit = defineEmits(['change', 'delete'])
+  </script>
+  ```
+
+- **`defineExpose()`**
+  - `<script setup>`을 사용하는 컴포넌트는 기본적으로 **Template Refs**나 **$parent**와 같이 컴포넌트간 통신이 닫혀 있습니다.
+  - `<script setup>`을 사용하는 컴포넌트의 내부 데이터나 메서드를 명시적으로 노출하려면 `defineExpose()` 컴파일러 매크로를 사용할 수 있습니다.
+  ```html
+  <script setup>
+  import { ref } from 'vue'
+
+  const a = 1
+  const b = ref(2)
+
+  defineExpose({
+    a,
+    b
+  })
+  </script>
+  ```
+
+  - expose는 일반 `<script>`에서도 사용할 수 있습니다.
+  ```javascript
+  export default {
+    setup(props, context) {
+      // Expose public properties (Function)
+      console.log(context.expose)
+    }
+  }
+  ```
+
+- **`useSlots()` & `useAttrs()`**
+  - slots과 attrs는 `<template>` 내부에서 $slots와 $attrs로 직접 접근해서 사용할 수 있습니다.<br />만약 `<script setup>` 내부에서 slots과 attrs를 사용하고 싶다면<br />각각 useSlots(), useAttrs() helper 메서드를 사용할 수 있습니다.
+  ```html
+  <script setup>
+  import { useSlots, useAttrs } from 'vue'
+
+  const slots = useSlots()
+  const attrs = useAttrs() // fallthrough 속성 접근하기
+  </script>
+  ```
+
+  - `slots`과 `attrs`는 일반 `<script>`에서도 사용할 수 있습니다.
+  ```javascript
+  export default {
+    setup(props, context) {
+      // Attributes (Non-reactive object, equivalent to $attrs)
+      console.log(context.attrs)
+
+      // Slots (Non-reactive object, equivalent to $slots)
+      console.log(context.slots)
+    }
+  }
+  ```
+
+- **`<script>`와 `<script setup>` 함께 사용**
+  - `<script setup>` 은 `normal <script>` 와 함께 사용할 수 있습니다. 예를 들면 다음과 같은 경우에 `normal <script>`가 필요할 수 있습니다.
+    - 예를 들어 `<script setup>`에서 표현할 수 없는 inheritAttrs옵션이나 Plugin을 통해 활성화된 Custom 옵션을 사용하고자 할때 `normal <script>`를 함께 선언합니다.
+    - `named export`를 선언 했을 때 (예: `export const data`)
+    - 한 번만 실행되어야 하는 로직이 있을 때
+  ```html
+  <script>
+  // 일반 스크립트, 모듈 범위에서 한 번만 실행
+  runSideEffectOnce()
+
+  // 옵션 선언
+  export default {
+    inheritAttrs: false,
+    customOptions: {}
+  }
+  </script>
+
+  <script setup>
+  // 각 인스턴스 생성시 setup() 범위에서 실행
+  </script>
+  ```
+
+- **Top-level `await`**
+  - `<script setup>` 내의 Top-level에서 await을 사용할 수 있습니다.<br />그리고 코드는 `async setup()` 이렇게 컴파일 됩니다.
+  ```html
+  <script setup>
+  const post = await fetch(`/api/post/1`).then((r) => r.json())
+  </script>
+  ```
+
+  1. `npm i axios` : 해당 프로젝트 폴더에 통신 모듈 `axios`를 설치한다.
+  2. [Dummy Rest API Example](http://dummy.restapiexample.com/)
+    - **axios 호출시 CORS error 발생 시**
+      - 아래처럼 axios로 호출시 CORS 에러가 발생한다면
+        ```javascript
+        const response = await axios('https://dummy.restapiexample.com/api/v1/employees'); // CORS 에러 발생
+        ```
+      
+      - 아래 URL로 변경하여 테스트해주세요.
+        ```javascript
+        const response = await axios('https://jsonplaceholder.typicode.com/posts');
+        ```
+  
+  3. `ESLint` 버전이 8 이상임으로 아래와 같이 적용한다.<br />[Using ESLint >= v8.x](https://eslint.vuejs.org/user-guide/#using-eslint-v8-x)
+  4. `.eslintrc.cjs` : ESLint 설정 파일에 추가 한다.
+    ```javascript
+    module.exports = {
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    }
+    ```
