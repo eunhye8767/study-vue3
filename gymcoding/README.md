@@ -3244,3 +3244,63 @@
       },
     }
     ```
+
+### 동적 컴포넌트
+- [교재, 동적 컴포넌트](https://gymcoding.notion.site/Dynamic-Components-9073c8a81e3f41a7b7b54384f7dd03cd)
+- 컴포넌트를 동적으로 변경하고 싶을 때 `v-bind:is` 속성을 사용해서 변경할 수 있습니다.<br />동적 컴포넌트는 탭 인터페이스와 같이 컴포넌트간에 동적으로 전환해야 할 때 유용합니다.
+  ```html
+  <component :is="currentTabComponent"></component>
+  ```
+
+  - 위 예시에서 `:is` 속성에 전달된 값은 다음 중 하나를 포함할 수 있습니다.
+    - 등록된 컴포넌트의 문자열 이름 `string`
+    - 실제 가져온 컴포넌트 객체 `object`
+
+  ```html
+  <component :is=”...” />를 사용하여 여러 컴포넌트간 전환하면 컴포넌트의 마운트가 매번 해제됩니다. 
+  이때 <KeepAlive> 내장 컴포넌트를 사용하여 “비활성 컴포넌트"들의 “활성” 상태를 유지할 수 있도록 강제할 수 있습니다.
+  ```
+
+  - **실습**
+    ```html
+    <!-- DynamicComponent.vue -->
+    <template>
+      <div class="container py-4">
+        <button
+          class="btn btn-primary me-2"
+          @click="changeCurrentComp(DynamicApple)"
+        >
+          사과
+        </button>
+        <button class="btn btn-danger" @click="changeCurrentComp(DynamicBanna)">
+          바나나
+        </button>
+        <hr />
+        <component :is="currentComp" />
+        <p>{{ obj1 }}</p>
+        <p>{{ obj2 }}</p>
+      </div>
+    </template>
+
+    <script setup>
+    import { ref, shallowRef } from 'vue';
+
+    import DynamicApple from '@/components/DynamicApple.vue';
+    import DynamicBanna from '@/components/DynamicBanna.vue';
+
+    // 값 자체가 바뀌었을 때는 shallowRef
+    /**
+     * const obj = shallowRef({name: "홍길동"})
+    * 홍길동 => 이길동 처럼 변경해도 반응없지만
+    * {name: "홍길동"} => {year: 10} 으로 하면 반응성.
+    */
+    const currentComp = shallowRef(DynamicApple);
+
+    const obj1 = ref({ name: '홍길동' });
+    const obj2 = shallowRef({ name: '이길동' });
+
+    const changeCurrentComp = comp => (currentComp.value = comp);
+    </script>
+
+    <style lang="scss" scoped></style>
+    ```
