@@ -8,4 +8,4 @@ import TheView from '@/layouts/TheView.vue';
   <TheView />
 </template>
 
-<style lang="scss" scoped></style>
+<style></style>

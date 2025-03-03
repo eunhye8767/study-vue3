@@ -1,7 +1,35 @@
-# 인프런 강의
-[짐코딩, Vue3 완벽 마스터](https://www.inflearn.com/course/vue-%EC%99%84%EB%B2%BD-%EC%8B%A4%EC%A0%84/dashboard)
+# vue3-posts
 
-<hr />
+This template should help get you started developing with Vue 3 in Vite.
 
-## 강의 교안
-- [쟘코딩, 노션 - 강의 교안](https://gymcoding.notion.site/Vue-js-3-cd9bb8ec6fec4ba9b388c808caf61880)
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
