@@ -15,6 +15,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  parser: 'babel-parser',
   rules: {
     'prettier/prettier': [
       'error',
