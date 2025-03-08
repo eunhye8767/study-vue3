@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2>제목</h2>
-    <p>내용</p>
-    <p class="text-muted">2020-01-01</p>
+    <h2>{{ form.title }}</h2>
+    <p>{{ form.content }}</p>
+    <p class="text-muted">{{ form.createdAt }}</p>
     <hr class="my-4" />
     <div class="row g-2">
       <div class="col-auto">
@@ -28,22 +28,45 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
+// import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
+import { getPostById } from "@/api/posts";
+import { ref } from "vue";
 
-const route = useRoute();
+const props = defineProps({
+  id: Number,
+});
+
+// const route = useRoute();
 const router = useRouter();
-const id = route.params.id;
+// const id = route.params.id;
 
-const goListPage = () =>
-  router.push({
-    name: "PostList",
-  });
+/**
+ * ref
+ * 장) 객체 할당 가능
+ * 장) 일관성 - 페이지 내 ref로 쓰는 것이 좋다고 함.
+ *      ㄴ 하지만 팀내 코딩 컨벤션에 맞춰 해야 함!!
+ * 단) form.value.title , form.value.content .. [ ".value" 으로 접근 가능 ]
+ *
+ * reactive
+ * 장) form.title , form.content .. [ ".value" 없이 접근 가능 ]
+ * 단) 객체 할당 블가능
+ */
+const form = ref({});
 
+const fetchPost = () => {
+  // const data = getPostById(id);
+  const data = getPostById(props.id);
+  form.value = { ...data };
+};
+
+fetchPost();
+
+const goListPage = () => router.push({ name: "PostList" });
+
+// const goEditPage = () => router.push({ name: "PostEdit", params: id });
 const goEditPage = () =>
-  router.push({
-    name: "PostEdit",
-    params: { id },
-  });
+  router.push({ name: "PostEdit", params: { id: props.id } });
 </script>
 
 <style lang="scss" scoped></style>
