@@ -1,11 +1,27 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-import { createApp } from 'vue';
-import App from './App.vue';
+import "primevue/resources/themes/aura-light-green/theme.css";
 
-import router from '@/router';
+import "@/assets/custom.css";
 
-createApp(App).use(router).mount('#app');
+import { createApp } from "vue";
+import App from "./App.vue";
 
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import PrimeVue from "primevue/config";
+import Dropdown from "primevue/dropdown";
+
+import router from "@/router";
+
+// createApp(App).use(router).use(PrimeVue).mount("#app");
+
+const app = createApp(App);
+
+app.use(router);
+app.use(PrimeVue);
+
+app.component("Dropdown", Dropdown);
+
+app.mount("#app");
+
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
