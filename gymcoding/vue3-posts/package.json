@@ -5,9 +5,11 @@
     "dev": "vite --host 0.0.0.0 --port 8767",
     "build": "vite build",
     "preview": "vite preview --port 5050",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "db": "json-server --watch db.json --port 5000"
   },
   "dependencies": {
+    "axios": "^1.8.3",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "primevue": "^3.45.0",
@@ -20,6 +22,7 @@
     "@vue/eslint-config-prettier": "^7.0.0",
     "eslint": "^8.5.0",
     "eslint-plugin-vue": "^8.2.0",
+    "json-server": "^0.17.4",
     "prettier": "^2.5.1",
     "sass": "^1.85.1",
     "vite": "^2.9.5"

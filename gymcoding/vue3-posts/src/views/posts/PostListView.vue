@@ -24,14 +24,28 @@ import AppCard from "@/components/AppCard.vue";
 import PostItem from "@/components/posts/PostItem.vue";
 import PostDetailView from "@/views/posts/PostDetailView.vue";
 
-import { getPosts } from "@/api/posts";
+import { getPosts, createPost } from "@/api/posts";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const posts = ref([]);
-const fetchPosts = () => {
-  posts.value = getPosts();
+// const fetchPosts = () => {
+//   getPosts()
+//     .then((response) => {
+//       console.log(response);
+//     })
+//     .catch((err) => console.log(err));
+// };
+
+const fetchPosts = async () => {
+  try {
+    const { data } = await getPosts();
+    // console.dir(response)
+    posts.value = data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 fetchPosts();
