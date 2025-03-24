@@ -5,8 +5,8 @@ export function getPosts(params) {
 }
 
 export function getPostById(id) {
-  // return posts.get(`/${id}`);
-  return posts.get(id);
+  return posts.get(`/${id}`);
+  // return posts.get(id);
 }
 
 export function createPost(data) {
