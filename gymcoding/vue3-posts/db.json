@@ -7,54 +7,6 @@
       "createdAt": "2021-01-01"
     },
     {
-      "id": 2,
-      "title": "제목2",
-      "content": "내용2",
-      "createdAt": "2022-02-02"
-    },
-    {
-      "id": 3,
-      "title": "제목3",
-      "content": "내용3",
-      "createdAt": "2023-03-03"
-    },
-    {
-      "id": 4,
-      "title": "제목4",
-      "content": "내용4",
-      "createdAt": "2024-04-04"
-    },
-    {
-      "id": 5,
-      "title": "제목5",
-      "content": "내용5",
-      "createdAt": "2025-05-05"
-    },
-    {
-      "id": 6,
-      "title": "제목6",
-      "content": "내용6",
-      "createdAt": "2026-06-06"
-    },
-    {
-      "id": 7,
-      "title": "제목7",
-      "content": "내용7",
-      "createdAt": "2027-07-07"
-    },
-    {
-      "id": 8,
-      "title": "제목8",
-      "content": "내용8",
-      "createdAt": "2028-08-08"
-    },
-    {
-      "id": 9,
-      "title": "제목9",
-      "content": "내용9",
-      "createdAt": "2029-09-09"
-    },
-    {
       "title": "ㅋㅋㅋ 졸려워요",
       "content": "너무 졸립죠? 네?",
       "createdAt": 1742300413866,
@@ -67,16 +19,22 @@
       "id": 11
     },
     {
-      "title": "gkgkgkgk",
-      "content": "drmaz",
-      "createdAt": 1742822970784,
-      "id": 12
-    },
-    {
       "title": "하하 안녕하세요!!",
       "content": "하하 안녕하세요 반갑?!",
       "createdAt": 1742823030588,
+      "id": 12
+    },
+    {
+      "title": null,
+      "content": null,
+      "createdAt": 1742910603367,
       "id": 13
+    },
+    {
+      "title": null,
+      "content": null,
+      "createdAt": 1742910772223,
+      "id": 14
     }
   ]
 }
