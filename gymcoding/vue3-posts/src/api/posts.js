@@ -11,15 +11,18 @@ export function getPostById(id) {
 
 export function createPost(data) {
   // 등록
-  return posts.post(`/`, data);
+  // return posts.post(`/`, data);
+  return posts.post(``, data);
 }
 
 export function updatePost(id, data) {
   // 수정
-  return posts.put(id, data);
+  // return posts.put(id, data);
+  return posts.put(`${id}`, data);
 }
 
 export function deletePost(id) {
   // 삭제
-  return posts.delete(id);
+  // return posts.delete(id);
+  return posts.delete(`${id}`);
 }

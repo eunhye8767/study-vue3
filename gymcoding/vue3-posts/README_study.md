@@ -157,3 +157,7 @@ router.push({ path: "/user", params: { username } }); // -> /user
 // 설치
 npm install axios
 ```
+
+## 다른 사람의 코드 살펴보기
+
+`best practices mulitiple v-model` 단어를 활용해 검색해보기.
